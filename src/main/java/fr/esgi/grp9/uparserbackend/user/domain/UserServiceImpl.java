@@ -18,12 +18,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(User user) {
+    public User create(final User user) {
         return userRepository.save(
                 User.builder()
                         .firstName(user.getFirstName())
                         .lastName(user.getLastName())
                         .email(user.getEmail())
+                        .password(user.getPassword())
                         .phoneNumber(user.getPhoneNumber())
                         .birthDate(null)
                         .createDate(null)

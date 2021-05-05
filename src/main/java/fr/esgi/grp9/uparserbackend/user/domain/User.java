@@ -22,6 +22,7 @@ public class User {
     private String lastName;
     @Indexed(unique = true)
     private String email;
+    private String password;
     private int phoneNumber;
     @Field(value = "birth_date")
     private Date birthDate;
