@@ -14,11 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class AuthenticationConfig  extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final TokenProvider tokenProvider;
 
-    public AuthenticationConfig(TokenProvider tokenProvider) {
+    public WebSecurityConfig(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
