@@ -2,7 +2,7 @@ package fr.esgi.grp9.uparserbackend.authentication.login;
 
 import fr.esgi.grp9.uparserbackend.authentication.security.TokenProvider;
 import fr.esgi.grp9.uparserbackend.user.domain.User;
-import fr.esgi.grp9.uparserbackend.user.domain.UserRepository;
+
 import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
