@@ -39,7 +39,7 @@ public class AuthenticationController {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getEmail(),
                 loginDTO.getPassword());
-        System.out.println(loginDTO);
+
         authenticationManager.getObject().authenticate(authenticationToken);
 
         String token = tokenProvider.createToken(
