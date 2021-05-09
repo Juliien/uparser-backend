@@ -1,5 +1,6 @@
 package fr.esgi.grp9.uparserbackend.authentication.security;
 
+import fr.esgi.grp9.uparserbackend.authentication.login.Role;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,17 +11,17 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Slf4j
 @Component
 public class TokenProvider {
 
-    private static final String AUTHORITIES_KEY = "auth";
+    private String AUTHORITIES_KEY = "auth";
     private final long tokenValidityInMilliseconds = Duration.ofMinutes(5).getSeconds() * 1000;
     private final byte[] secret;
 
@@ -28,19 +29,18 @@ public class TokenProvider {
         this.secret = secret.toString().getBytes();
     }
 
-    public String createToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String createToken(String username, Set<Role> set) {
+        Claims claims = Jwts.claims().setSubject(username);
+        claims.put("roles", set);
 
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + this.tokenValidityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setClaims(claims)
+                .setIssuedAt(now)
                 .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS512, AUTHORITIES_KEY)
                 .compact();
     }
 
@@ -57,20 +57,26 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    public boolean validateToken(String authToken) {
-        try {
-            parseToken(authToken);
-            return true;
-
-        } catch (JwtException | IllegalArgumentException e) {
-            log.info("Invalid JWT token.");
-            return false;
-        }
-    }
-
     private Jws<Claims> parseToken(String authToken) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(authToken);
+    }
+
+    public String resolveToken(HttpServletRequest req) {
+        String bearerToken = req.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        return null;
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(AUTHORITIES_KEY).parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtException("Expired or invalid JWT token");
+        }
     }
 }

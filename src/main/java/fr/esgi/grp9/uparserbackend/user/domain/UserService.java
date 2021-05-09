@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    User create(User user);
+    User createUser(User user);
+    User findUserByEmail(String email);
     List<User> getUsers();
     Optional<User> getUserById(String id);
 }
