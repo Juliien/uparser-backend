@@ -80,9 +80,4 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
-
-    @Override
-    public Optional<User> getUserById(String id) {
-        return userRepository.findById(id);
-    }
 }
