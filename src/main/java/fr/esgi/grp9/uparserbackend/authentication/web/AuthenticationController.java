@@ -34,24 +34,39 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getEmail(),
-                loginDTO.getPassword());
 
-        authenticationManager.getObject().authenticate(authenticationToken);
+        if(loginDTO.getEmail() != null && loginDTO.getPassword() != null
+                && !loginDTO.getEmail().isBlank() && !loginDTO.getPassword().isBlank()
+                && !loginDTO.getEmail().isEmpty() && !loginDTO.getPassword().isEmpty()) {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    loginDTO.getEmail(),
+                    loginDTO.getPassword());
 
-        String token = tokenProvider.createToken(
-                loginDTO.getEmail(),
-                this.userService.findUserByEmail(loginDTO.getEmail()).getRoles());
-        Map<String, String> result = new HashMap<>();
-        result.put("email", loginDTO.getEmail());
-        result.put("token", token);
+            authenticationManager.getObject().authenticate(authenticationToken);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+            String token = tokenProvider.createToken(loginDTO.getEmail(), this.userService.findUserByEmail(loginDTO.getEmail()).getRoles());
+
+            Map<String, String> result = new HashMap<>();
+            result.put("token", token);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody final User user) {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.OK);
+    public ResponseEntity<User> register(@RequestBody final User user) {
+        User _userExist = userService.findUserByEmail(user.getEmail());
+        if(_userExist == null) {
+            try {
+                User _user = userService.createUser(user);
+                return new ResponseEntity<>(_user, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 }
