@@ -2,21 +2,19 @@ package fr.esgi.grp9.uparserbackend.authentication.web;
 
 import fr.esgi.grp9.uparserbackend.authentication.login.LoginDTO;
 import fr.esgi.grp9.uparserbackend.authentication.security.TokenProvider;
-
 import fr.esgi.grp9.uparserbackend.user.domain.User;
 import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/auth")
@@ -45,10 +43,11 @@ public class AuthenticationController {
         String token = tokenProvider.createToken(
                 loginDTO.getEmail(),
                 this.userService.findUserByEmail(loginDTO.getEmail()).getRoles());
-        Map<String, String> tokenResult = new HashMap<>();
-        tokenResult.put("token", token);
+        Map<String, String> result = new HashMap<>();
+        result.put("email", loginDTO.getEmail());
+        result.put("token", token);
 
-        return new ResponseEntity<>(tokenResult, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/register")
