@@ -2,7 +2,6 @@ package fr.esgi.grp9.uparserbackend.authentication.security;
 
 import fr.esgi.grp9.uparserbackend.authentication.login.Role;
 import io.jsonwebtoken.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,11 +12,13 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
-@Slf4j
 @Component
 public class TokenProvider {
 
