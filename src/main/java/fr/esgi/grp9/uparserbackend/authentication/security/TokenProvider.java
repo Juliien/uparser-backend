@@ -30,8 +30,8 @@ public class TokenProvider {
         this.secret = secret.toString().getBytes();
     }
 
-    public String createToken(String username, Set<Role> set) {
-        Claims claims = Jwts.claims().setSubject(username);
+    public String createToken(String email, Set<Role> set) {
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", set);
 
         Date now = new Date();
