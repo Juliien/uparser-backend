@@ -72,4 +72,4 @@ target/
 # End of https://www.toptal.com/developers/gitignore/api/java,java-web,code-java
 
 ## application.properties
-src/main/resources/application.properties
+src/main/resources/application-dev.properties
