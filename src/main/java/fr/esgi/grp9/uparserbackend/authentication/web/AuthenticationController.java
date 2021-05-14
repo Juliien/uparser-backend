@@ -1,6 +1,7 @@
 package fr.esgi.grp9.uparserbackend.authentication.web;
 
 import fr.esgi.grp9.uparserbackend.authentication.login.LoginDTO;
+import fr.esgi.grp9.uparserbackend.authentication.login.LoginResponseDTO;
 import fr.esgi.grp9.uparserbackend.authentication.security.TokenProvider;
 import fr.esgi.grp9.uparserbackend.user.domain.User;
 import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
@@ -12,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,7 +31,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
 
         if(loginDTO.getEmail() != null && loginDTO.getPassword() != null
                 && !loginDTO.getEmail().isBlank() && !loginDTO.getPassword().isBlank()
@@ -44,12 +42,13 @@ public class AuthenticationController {
 
             authenticationManager.getObject().authenticate(authenticationToken);
 
-            String token = tokenProvider.createToken(loginDTO.getEmail(), this.userService.findUserByEmail(loginDTO.getEmail()).getRoles());
+            String token = tokenProvider.createToken(loginDTO.getEmail(),
+                    this.userService.findUserByEmail(loginDTO.getEmail()).getRoles());
 
-            Map<String, String> result = new HashMap<>();
-            result.put("token", token);
+            LoginResponseDTO response = new LoginResponseDTO();
+            response.setToken(token);
 
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
