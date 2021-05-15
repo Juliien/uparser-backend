@@ -3,6 +3,7 @@ package fr.esgi.grp9.uparserbackend.authentication.security;
 import fr.esgi.grp9.uparserbackend.authentication.login.Role;
 import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,18 +15,15 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Set;
 
-
 @Component
 public class TokenProvider {
 
-    @Value("${security.token.secret}")
+    @Value("${token.secret.key}")
     private String secretKey;
     private final long tokenValidityInMilliseconds = Duration.ofMinutes(60).getSeconds() * 1000;
-    private final UserServiceImpl userService;
 
-    public TokenProvider(UserServiceImpl userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    private UserServiceImpl userService;
 
     public String createToken(String email, Set<Role> set) {
         Claims claims = Jwts.claims().setSubject(email);
