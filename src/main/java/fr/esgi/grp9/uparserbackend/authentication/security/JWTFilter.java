@@ -11,7 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-
 public class JWTFilter extends GenericFilterBean {
 
     private final TokenProvider tokenProvider;
