@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document(collection = "historic")
 public class Historic {
+
     @Id
     private String id;
     private String language;

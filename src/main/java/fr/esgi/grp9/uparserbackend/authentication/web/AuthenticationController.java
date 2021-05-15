@@ -56,7 +56,9 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody final User user) {
+
         User _userExist = userService.findUserByEmail(user.getEmail());
+
         if(_userExist == null) {
             try {
                 User _user = userService.createUser(user);
@@ -64,8 +66,7 @@ public class AuthenticationController {
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
