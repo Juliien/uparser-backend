@@ -29,6 +29,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
 
       - name: Azure Login
         uses: azure/login@v1
