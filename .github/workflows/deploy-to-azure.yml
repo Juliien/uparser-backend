@@ -8,6 +8,7 @@ on:
       - development
 
 env:
+  GITHUB_SHA: ${{ github.sha }}
   REGISTRY_HOSTNAME: .azurecr.io
   IMAGE_NAME: uparser-api
   ACR_REGISTRY_NAME: ${{ secrets.ACR_REGISTRY_NAME }}
@@ -28,8 +29,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.TOKEN }}
 
       - name: Azure Login
         uses: azure/login@v1
