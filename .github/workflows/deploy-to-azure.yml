@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - development
 
 env:
   GITHUB_SHA: ${{ github.sha }}
