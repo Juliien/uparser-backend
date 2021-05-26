@@ -15,6 +15,7 @@
     <description>Uparser backend API</description>
     <properties>
         <java.version>11</java.version>
+        <kafka.version>2.8.0</kafka.version>
     </properties>
     <dependencies>
         <dependency>
@@ -53,6 +54,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.version}</version>
         </dependency>
     </dependencies>
 
