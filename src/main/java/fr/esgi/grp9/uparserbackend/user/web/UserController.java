@@ -4,9 +4,7 @@ import fr.esgi.grp9.uparserbackend.user.domain.User;
 import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +18,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @PostMapping
+    public ResponseEntity<User> getUserByEmail(@RequestBody final User user) {
+        return new ResponseEntity<>(this.userService.findUserByEmail(user.getEmail()), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<List<User>> getUsers() {
         return new ResponseEntity<>(this.userService.getUsers(), HttpStatus.OK);
     }
