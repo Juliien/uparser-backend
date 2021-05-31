@@ -6,13 +6,17 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Transaction {
+public class KafkaTransaction {
     @JsonProperty
-    private String id;
+    private String idRun;
     @JsonProperty
     private String userId;
+    @JsonProperty
+    private String fileName;
     @JsonProperty
     private String fileContent;
     @JsonProperty
     private String code;
+    @JsonProperty
+    private Extension extensionEnd;
 }
