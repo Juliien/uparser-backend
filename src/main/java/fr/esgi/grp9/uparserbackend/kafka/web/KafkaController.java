@@ -3,8 +3,10 @@ package fr.esgi.grp9.uparserbackend.kafka.web;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaServiceImpl;
 import fr.esgi.grp9.uparserbackend.kafka.domain.ParserMetaData;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.OutOfOrderSequenceException;
 import org.apache.kafka.common.errors.ProducerFencedException;
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +31,17 @@ public class KafkaController {
         this.uParserProducerService = uParserProducerService;
     }
 
+
+//    @PostMapping("/produceNew")
+//    public ResponseEntity<ParserMetaData> newProduce(@RequestBody final KafkaTransaction kafkaTransaction) {
+//
+//        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//    }
+
+
+
     @PostMapping("/produce")
-    public ResponseEntity<ParserMetaData> produce(@RequestBody final KafkaTransaction kafkaTransaction) {
+    public ResponseEntity<KafkaTransaction> produce(@RequestBody final KafkaTransaction kafkaTransaction) {
 //    public ResponseEntity<KafkaTransaction> produce(@RequestBody final KafkaTransaction kafkaTransaction) {
 
         //TODO get les files par id
@@ -38,21 +51,14 @@ public class KafkaController {
         if(_fileExist == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
+
+
             Producer<String, KafkaTransaction> producer = uParserProducerService.createKafkaProducer();
 
             ProducerRecord<String, KafkaTransaction> producerRecord = uParserProducerService.createProducerRecord(kafkaTransaction);
             Future<RecordMetadata> futureResult = producer.send(producerRecord);
 
-
             try {
-//                int i = 0;
-//                while(i < 100){
-//                    System.out.println(futureResult.get(500, TimeUnit.MILLISECONDS).toString());
-//                    System.out.println(i);
-//                    i++;
-//                }
-
-
 
                 //lancer un consumer qui consume jusqu'a trouver l'id de run qui correspond
 
@@ -67,10 +73,13 @@ public class KafkaController {
                 //faire matcher les id du fichier et des resultats du run
                 RecordMetadata result = futureResult.get(5000, TimeUnit.MILLISECONDS);
                 ParserMetaData resultParserMetaData = uParserProducerService.createParserMetaData(result);
-                return new ResponseEntity<>(resultParserMetaData, HttpStatus.OK);
 
 
-//                return new ResponseEntity<>(kafkaTransaction, HttpStatus.OK);
+                KafkaTransaction kafkaTransaction1 = uParserProducerService.seekForRunnerResults(kafkaTransaction.getRunId());
+                return new ResponseEntity<>(kafkaTransaction1, HttpStatus.OK);
+//
+//
+////                return new ResponseEntity<>(kafkaTransaction, HttpStatus.OK);
             } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
                 // We can't recover from these exceptions, so our only option is to close the producer and exit.
                 System.out.println("1" + e.getMessage());
@@ -96,6 +105,10 @@ public class KafkaController {
                 System.out.println("close");
                 producer.close();
             }
+
+
+
+
         }
     }
 }
