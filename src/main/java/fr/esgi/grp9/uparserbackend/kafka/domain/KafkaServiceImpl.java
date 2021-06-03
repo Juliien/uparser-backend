@@ -1,8 +1,4 @@
 package fr.esgi.grp9.uparserbackend.kafka.domain;
-
-//import com.fasterxml.jackson.databind.JsonDeserializer;
-
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -13,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class KafkaServiceImpl implements KafkaService{
@@ -32,14 +26,14 @@ public class KafkaServiceImpl implements KafkaService{
     private String brokerPort;
 
     @Override
-    public Producer<String, KafkaTransaction> createKafkaProducer() {
-        Properties props = propertiesProvider("produce");
+    public Producer<String, KafkaTransaction> createKafkaProducer(String groupId) {
+        Properties props = propertiesProvider("produce", groupId);
         return  new KafkaProducer<String, KafkaTransaction>(props);
     }
 
     @Override
-    public KafkaConsumer<String, KafkaTransaction> createKafkaConsumer() {
-        Properties properties = propertiesProvider("consume");
+    public KafkaConsumer<String, KafkaTransaction> createKafkaConsumer(String groupId) {
+        Properties properties = propertiesProvider("consume", groupId);
         return  new KafkaConsumer<String, KafkaTransaction>(properties);
     }
 
@@ -54,27 +48,35 @@ public class KafkaServiceImpl implements KafkaService{
     }
 
     @Override
-    public KafkaTransaction seekForRunnerResults(String runId) {
-        KafkaConsumer<String, KafkaTransaction> consumer = createKafkaConsumer();
+    public KafkaTransaction seekForRunnerResults(String soughtRunId) {
+        KafkaConsumer<String, KafkaTransaction> consumer = createKafkaConsumer(soughtRunId);
 
-        Set<TopicPartition> partSet = new HashSet<>();
-        partSet.add(new TopicPartition(topicNameProduce, 0));
-        consumer.assign(partSet);
+        consumer.subscribe(Collections.singletonList(topicNameProduce));
+
+//        Set<TopicPartition> partSet = new HashSet<>();
+//        TopicPartition topicPartition = new TopicPartition(topicNameConsume, 0);
+//        partSet.add(topicPartition);
+//        consumer.assign(partSet);
 //        consumer.seekToBeginning(partSet);
 
-        boolean end = true;
+        boolean keep = true;
         KafkaTransaction kafkaTransaction = null;
-        while (end) {
+
+        while (keep) {
             ConsumerRecords<String, KafkaTransaction> consumerRecords =
                     consumer.poll(Duration.ofMillis(3000));
 
             for (ConsumerRecord<String, KafkaTransaction> record : consumerRecords) {
-                System.out.println("processing");
                 System.out.printf("KAFKA | CONSUME     topic = %s    Partition = %d     Offset = %d     Value = %s\n",
                         record.topic(), record.partition(), record.offset(), record.value());
                 kafkaTransaction = record.value();
-                if(kafkaTransaction.getRunId().equals(runId)){
-                    end = false;
+                if(kafkaTransaction.getRunId() != null){
+                    if(kafkaTransaction.getRunId().equals(soughtRunId)){
+                        keep = false;
+                        consumer.commitSync();
+                        consumer.close();
+                        break;
+                    }
                 }
             }
         }
@@ -82,14 +84,15 @@ public class KafkaServiceImpl implements KafkaService{
     }
 
     @Override
-    public Properties propertiesProvider(String action) {
+    public Properties propertiesProvider(String action, String groupId) {
         Properties props = new Properties();
 
         switch (action){
             case "consume":
                 props.put("bootstrap.servers", brokerAddress + ":" + brokerPort);
                 props.put("request.timeout.ms", 5000);
-                props.put("group.id", "valle");
+                props.put("group.id", "groupForRunId = " + groupId);
+                props.put("enable.auto.commit", "false");
                 props.put("key.deserializer",
                         "org.apache.kafka.common.serialization.StringDeserializer");
                 props.put("value.deserializer",
@@ -115,7 +118,6 @@ public class KafkaServiceImpl implements KafkaService{
 
     @Override
     public ProducerRecord<String, KafkaTransaction> createProducerRecord(KafkaTransaction kafkaTransaction) {
-//        return new ProducerRecord<String, KafkaTransaction>("test-topic2", kafkaTransaction.getIdRun(), kafkaTransaction);
         return new ProducerRecord<String, KafkaTransaction>(this.topicNameProduce, kafkaTransaction.getUserId(), kafkaTransaction);
     }
 

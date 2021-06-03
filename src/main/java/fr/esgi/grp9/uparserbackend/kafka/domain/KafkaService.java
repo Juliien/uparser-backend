@@ -9,10 +9,10 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import java.util.Properties;
 
 public interface KafkaService {
-    Properties propertiesProvider(String action);
+    Properties propertiesProvider(String action, String groupId);
     ProducerRecord<String, KafkaTransaction> createProducerRecord(KafkaTransaction kafkaTransaction);
-    Producer<String, KafkaTransaction> createKafkaProducer();
-    KafkaConsumer<String, KafkaTransaction> createKafkaConsumer();
+    Producer<String, KafkaTransaction> createKafkaProducer(String groupId);
+    KafkaConsumer<String, KafkaTransaction> createKafkaConsumer(String groupId);
     ParserMetaData createParserMetaData(RecordMetadata recordMetadata);
     KafkaTransaction seekForRunnerResults(String runId);
 }
