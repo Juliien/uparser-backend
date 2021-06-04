@@ -13,6 +13,6 @@ public interface KafkaService {
     ProducerRecord<String, KafkaTransaction> createProducerRecord(KafkaTransaction kafkaTransaction);
     Producer<String, KafkaTransaction> createKafkaProducer(String groupId);
     KafkaConsumer<String, KafkaTransaction> createKafkaConsumer(String groupId);
-    ParserMetaData createParserMetaData(RecordMetadata recordMetadata);
+//    ParserMetaData createParserMetaData(RecordMetadata recordMetadata);
     KafkaTransaction seekForRunnerResults(String runId);
 }
