@@ -12,13 +12,14 @@ public class KafkaTransaction {
     public KafkaTransaction() {
     }
 
-    public KafkaTransaction(String runId, String userId, String fileName, String fileContent, String code, Extension extensionEnd) {
+    public KafkaTransaction(String runId, String userId, String fileName, String fileContent, String code, String extensionEnd, String language) {
         this.runId = runId;
         this.userId = userId;
         this.fileName = fileName;
         this.fileContent = fileContent;
         this.code = code;
         this.extensionEnd = extensionEnd;
+        this.language = language;
     }
 
     @Id
@@ -32,5 +33,7 @@ public class KafkaTransaction {
     @JsonProperty
     private String code;
     @JsonProperty
-    private Extension extensionEnd;
+    private String extensionEnd;
+    @JsonProperty
+    private String language;
 }

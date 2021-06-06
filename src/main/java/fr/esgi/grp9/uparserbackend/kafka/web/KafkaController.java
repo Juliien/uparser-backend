@@ -37,7 +37,8 @@ public class KafkaController {
                     kafkaTransaction.getFileName(),
                     kafkaTransaction.getFileContent(),
                     kafkaTransaction.getCode(),
-                    kafkaTransaction.getExtensionEnd());
+                    kafkaTransaction.getExtensionEnd(),
+                    kafkaTransaction.getLanguage());
 
             ProducerRecord<String, KafkaTransaction> producerRecord = uParserProducerService.createProducerRecord(kafkaTransaction1);
             Future<RecordMetadata> futureResult = producer.send(producerRecord);
