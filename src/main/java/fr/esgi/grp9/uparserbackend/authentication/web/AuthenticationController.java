@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -32,7 +34,6 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
-
         if(loginDTO.getEmail() != null && loginDTO.getPassword() != null
                 && !loginDTO.getEmail().isBlank() && !loginDTO.getPassword().isBlank()
                 && !loginDTO.getEmail().isEmpty() && !loginDTO.getPassword().isEmpty()) {
@@ -42,8 +43,8 @@ public class AuthenticationController {
 
             authenticationManager.getObject().authenticate(authenticationToken);
 
-            String token = tokenProvider.createToken(loginDTO.getEmail(),
-                    this.userService.findUserByEmail(loginDTO.getEmail()).getRoles());
+            String token = tokenProvider.createToken(
+                    this.userService.findUserByEmail(loginDTO.getEmail()));
 
             LoginResponseDTO response = new LoginResponseDTO();
             response.setToken(token);
@@ -57,14 +58,19 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody final User user) {
 
-        User _userExist = userService.findUserByEmail(user.getEmail());
+        if(user.getEmail() != null) {
+            User _userExist = userService.findUserByEmail(user.getEmail());
 
-        if(_userExist == null) {
-            try {
-                User _user = userService.createUser(user);
-                return new ResponseEntity<>(_user, HttpStatus.CREATED);
-            } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            if(_userExist == null) {
+                try {
+                    User _user = userService.createUser(user);
+                    return new ResponseEntity<>(_user, HttpStatus.CREATED);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

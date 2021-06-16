@@ -1,6 +1,6 @@
 package fr.esgi.grp9.uparserbackend.authentication.security;
 
-import fr.esgi.grp9.uparserbackend.authentication.login.Role;
+import fr.esgi.grp9.uparserbackend.user.domain.User;
 import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,23 +11,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.util.Date;
-import java.util.Set;
 
 @Component
 public class TokenProvider {
 
     @Value("${token.secret.key}")
     private String secretKey;
-    private final long tokenValidityInMilliseconds = Duration.ofMinutes(60).getSeconds() * 1000;
+
+    @Value("${security.token.ttl.milliseconds}")
+    private long tokenValidityInMilliseconds;
 
     @Autowired
     private UserServiceImpl userService;
 
-    public String createToken(String email, Set<Role> set) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", set);
+    public String createToken(User user) {
+        Claims claims = Jwts.claims();
+        claims.put("email", user.getEmail());
+        claims.put("userId", user.getId());
+        claims.put("roles", user.getRoles());
 
         Date validity = new Date((new Date()).getTime() + this.tokenValidityInMilliseconds);
 
@@ -41,7 +43,7 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = parseToken(token).getBody();
-        UserDetails userDetails = this.userService.loadUserByUsername(claims.getSubject());
+        UserDetails userDetails = this.userService.loadUserByUsername(claims.get("email").toString());
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 

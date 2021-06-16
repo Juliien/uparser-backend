@@ -28,7 +28,7 @@ public class User {
     private String email;
     private String password;
     @Field(value = "create_date")
-    private LocalDate createDate;
+    private Date createDate;
     @Field(value = "close_date")
     private Date closeDate;
     @Field(value = "last_login_date")
