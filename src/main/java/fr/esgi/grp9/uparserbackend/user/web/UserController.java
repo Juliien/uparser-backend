@@ -22,10 +22,14 @@ public class UserController {
     public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
         if(email != null) {
             try {
-                return new ResponseEntity<>(this.userService.findUserByEmail(email), HttpStatus.OK);
+                User user = this.userService.findUserByEmail(email);
+                if(user != null)  {
+                    return new ResponseEntity<>(user , HttpStatus.OK);
+                }
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

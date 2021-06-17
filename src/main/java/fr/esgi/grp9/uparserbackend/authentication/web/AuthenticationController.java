@@ -64,14 +64,16 @@ public class AuthenticationController {
             if(_userExist == null) {
                 try {
                     User _user = userService.createUser(user);
-                    return new ResponseEntity<>(_user, HttpStatus.CREATED);
+                    if(_user != null) {
+                        return new ResponseEntity<>(_user, HttpStatus.CREATED);
+                    }
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
