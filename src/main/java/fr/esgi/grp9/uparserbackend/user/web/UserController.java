@@ -26,6 +26,7 @@ public class UserController {
                 if(user != null)  {
                     return new ResponseEntity<>(user , HttpStatus.OK);
                 }
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -46,12 +47,11 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<User> updateUsers(@RequestBody User user) {
-        // finish Function
+    @PutMapping("/password")
+    public ResponseEntity<User> updateUserPassword(@RequestBody User user) {
         try {
-            User newUser = this.userService.updateUser(user);
-            return new ResponseEntity<>(newUser, HttpStatus.OK);
+            User updatedUser = this.userService.updateUserPassword(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -77,18 +77,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return this.userRepository.findByEmail(email);
     }
 
     @Override
-    public User updateUser(User user) {
-        User currentUser = findUserByEmail(user.getEmail());
-        currentUser.setFirstName(user.getFirstName());
-        return currentUser;
+    public User updateUserPassword(User user) throws Exception {
+        User currentUser =  userRepository.findByEmail(user.getEmail());
+        if(currentUser != null) {
+            currentUser.setPassword(this.bCryptEncoder.encode(user.getPassword()));
+            return this.userRepository.save(currentUser);
+        } else {
+            throw new Exception("User doesn't exist!");
+        }
     }
 
     @Override
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return this.userRepository.findAll();
     }
 }
