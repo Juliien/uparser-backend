@@ -7,4 +7,5 @@ public interface FileService {
     File createFile(File file);
     File findFileById(String id);
     List<File> getFiles();
+    void deleteFileById(String id);
 }

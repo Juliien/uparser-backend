@@ -7,6 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface FileRepository extends MongoRepository<File, String>{
-//    File findFileById(String id);
-    Optional<File> findFileById(String id);
+    Optional<File> findById(String id);
+    void deleteById(String id);
 }

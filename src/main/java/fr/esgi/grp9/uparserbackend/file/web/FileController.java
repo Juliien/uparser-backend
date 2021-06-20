@@ -23,35 +23,40 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<File> getFileByName(@PathVariable String id){
-
-        File _fileExist = fileService.findFileById(id);
-
-//        if(_fileExist == null){
-//            return new ResponseEntity<>(HttpStatus.)
-//        }
-
+    public ResponseEntity<File> getFileById(@PathVariable String id){
         return new ResponseEntity<>(fileService.findFileById(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<File> createFile(@RequestBody final File file) {
 
-        File _fileExist = fileService.findFileById(file.getId());
-        if (_fileExist == null){
-            try {
-                File _file = fileService.createFile(file);
-                return new ResponseEntity<>(_file, HttpStatus.CREATED);
-            } catch (Exception exception){
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            File _file = fileService.createFile(file);
+            return new ResponseEntity<>(_file, HttpStatus.CREATED);
+        } catch (Exception exception){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping
     public ResponseEntity<File> modifyFile(@RequestBody final File file){
-
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFile(@PathVariable String id) {
+
+        File _fileExist = fileService.findFileById(id);
+
+        if (_fileExist != null) {
+            try {
+                fileService.deleteFileById(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception exception) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
