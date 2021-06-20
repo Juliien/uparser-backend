@@ -19,6 +19,4 @@ public class NotFoundWithIdException extends RuntimeException{
     public Map<String, Object> getErrors(){
         return errors;
     }
-
-
 }
