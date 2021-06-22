@@ -7,4 +7,5 @@ public interface UserService {
     User updateUserPassword(User user) throws Exception;
     User findUserByEmail(String email);
     List<User> getUsers();
+    String getCode(String email);
 }

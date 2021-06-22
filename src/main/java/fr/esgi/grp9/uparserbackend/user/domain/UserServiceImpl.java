@@ -95,4 +95,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> getUsers() {
         return this.userRepository.findAll();
     }
+
+    @Override
+    public String getCode(String email) {
+        String code = this.getStringRandom(6);
+        User user = User.builder().email(email).password(code).build();
+        try {
+            this.updateUserPassword(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return code;
+    }
+
+    private String getStringRandom(int length) {
+        String val = "";
+        Random random = new Random();
+
+        for(int i = 0; i < length; i++) {
+            String charOrNum = random.nextInt(2) % 2 == 0 ? "char" : "num";
+            if( "char".equalsIgnoreCase(charOrNum) ) {
+                int temp = random.nextInt(2) % 2 == 0 ? 65 : 97;
+                val += (char)(random.nextInt(26) + temp);
+            } else if( "num".equalsIgnoreCase(charOrNum) ) {
+                val += String.valueOf(random.nextInt(10));
+            }
+        }
+        return val;
+    }
 }
