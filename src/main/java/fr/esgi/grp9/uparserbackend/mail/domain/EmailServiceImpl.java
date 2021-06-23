@@ -20,11 +20,14 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendResetPasswordEmail(Email email) {
         String code = this.userService.getCode(email.getMailTo());
-        String content = " If you don't request a new password for Uparser, please ignore this e-mail. " +
-                "%n You have requested a new password, and here it is the verification code: %n" +
-                code +
-                "%n Do not reply to this e-mail address, the messages won't be replied to. " +
-                "%n Sincerely yours, Uparser Team.";
+        String content = "Réinitialisation de votre mot de passe\n" +
+                "\nBonjour\n"+
+                "\nNous avons bien reçu votre demande de changement de mot de passe.\n " +
+                "\nVous trouverez ci-dessous le code de vérification:\n" +
+                "\n" + code + "\n" +
+                "\nSi vous n'avez pas demandé à réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail.\n" +
+                "\nA très bientôt,\n" +
+                "\nL'équipe Uparser";
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {

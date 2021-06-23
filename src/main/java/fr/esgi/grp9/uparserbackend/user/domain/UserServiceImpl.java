@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String getCode(String email) {
-        String code = this.getStringRandom(6);
+        String code = this.getStringRandom();
         User user = User.builder().email(email).password(code).build();
         try {
             this.updateUserPassword(user);
@@ -108,19 +108,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return code;
     }
 
-    private String getStringRandom(int length) {
-        String val = "";
+    private String getStringRandom() {
+        StringBuilder val = new StringBuilder();
         Random random = new Random();
 
-        for(int i = 0; i < length; i++) {
+        for(int i = 0; i < 6; i++) {
             String charOrNum = random.nextInt(2) % 2 == 0 ? "char" : "num";
             if( "char".equalsIgnoreCase(charOrNum) ) {
                 int temp = random.nextInt(2) % 2 == 0 ? 65 : 97;
-                val += (char)(random.nextInt(26) + temp);
-            } else if( "num".equalsIgnoreCase(charOrNum) ) {
-                val += String.valueOf(random.nextInt(10));
+                val.append((char) (random.nextInt(26) + temp));
+            } else {
+                val.append(random.nextInt(10));
             }
         }
-        return val;
+        return val.toString();
     }
 }
