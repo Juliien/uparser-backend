@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @RestController
-@RequestMapping("/kafka/")
+@RequestMapping("/kafka")
 public class KafkaController {
     private final KafkaServiceImpl uParserProducerService;
 

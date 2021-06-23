@@ -1,12 +1,9 @@
-# This workflow will build a docker container, publish it to Azure Container Registry, and deploy it to ACR when a release is created
-
 name: Build and Deploy to Azure
 
 on:
   push:
     branches:
       - master
-      - development
 
 env:
   GITHUB_SHA: ${{ github.sha }}
@@ -53,8 +50,7 @@ jobs:
           push: true
           tags: julien75/uparser-api:latest
 
-      # Deploy the Docker image to the ACR cluster
-      - name: Deploy to ACR
+      - name: Deploy to Azure
         run: |
           az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME
           kubectl config current-context
