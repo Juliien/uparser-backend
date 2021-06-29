@@ -5,6 +5,7 @@ import fr.esgi.grp9.uparserbackend.code.quality.domain.CodeQualityServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class CodeQualityController {
     }
 
     @PostMapping
-    public ResponseEntity<Code> postCode(Code code) {
+    public ResponseEntity<Code> postCode(@RequestBody Code code) {
         return new ResponseEntity<>(this.codeQualityService.testCode(code), HttpStatus.OK);
     }
 }
