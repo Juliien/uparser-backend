@@ -21,6 +21,15 @@ public class CodeQualityController {
 
     @PostMapping
     public ResponseEntity<Code> postCode(@RequestBody Code code) {
-        return new ResponseEntity<>(this.codeQualityService.testCode(code), HttpStatus.OK);
+        try {
+            Code codeVerified = this.codeQualityService.testCode(code);
+            if(codeVerified != null)  {
+                return new ResponseEntity<>(codeVerified , HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

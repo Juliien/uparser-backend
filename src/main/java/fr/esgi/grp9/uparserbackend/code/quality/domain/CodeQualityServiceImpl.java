@@ -14,18 +14,28 @@ public class CodeQualityServiceImpl implements CodeQualityService {
 
     @Override
     public Code testCode(Code code) {
-        byte[] decodedBytes = Base64.getDecoder().decode(code.getCodeEncoded());
-        String decodedCode = new String(decodedBytes);
-        Code result = Code.builder().codeEncoded(decodedCode).userId(code.getUserId()).build();
-        // check & hash
-        boolean plagiat = this.checkCode(code);
-        if(plagiat) {
+        // check copy code
+        Code _code = this.checkCodeExist(code);
+        if(_code != null && code.getUserId().equals(_code.getUserId())) {
             return null;
         }
-        return this.codeQualityRepository.save(result);
+        String userCode = this.decodeCode(code);
+        this.parseCode(userCode);
+        return this.codeQualityRepository.save(code);
     }
 
-    private boolean checkCode(Code code) {
-        return this.codeQualityRepository.exists(code.getCodeEncoded());
+    private Code checkCodeExist(Code code) {
+            return this.codeQualityRepository.findByCodeEncoded(code.getCodeEncoded());
+    }
+
+    private String decodeCode(Code code) {
+        byte[] decodedBytes = Base64.getDecoder().decode(code.getCodeEncoded());
+        return new String(decodedBytes);
+    }
+
+    private void parseCode(String code) {
+        // count lignes of code
+        String[] lines = code.split("\r\n|\r|\n");
+        System.out.println(lines.length);
     }
 }

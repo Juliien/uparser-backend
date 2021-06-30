@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CodeQualityRepository extends MongoRepository<Code, String> {
+    Code findByCodeEncoded(String code);
 }
