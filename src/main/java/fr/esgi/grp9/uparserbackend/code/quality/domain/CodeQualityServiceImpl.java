@@ -3,6 +3,8 @@ package fr.esgi.grp9.uparserbackend.code.quality.domain;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class CodeQualityServiceImpl implements CodeQualityService {
@@ -10,6 +12,11 @@ public class CodeQualityServiceImpl implements CodeQualityService {
 
     public CodeQualityServiceImpl(CodeQualityRepository codeQualityRepository) {
         this.codeQualityRepository = codeQualityRepository;
+    }
+
+    @Override
+    public List<Code> getUserCodeHistory(String userId) {
+        return this.codeQualityRepository.findAllByUserId(userId);
     }
 
     @Override
@@ -21,6 +28,7 @@ public class CodeQualityServiceImpl implements CodeQualityService {
         }
         String userCode = this.decodeCode(code);
         this.parseCode(userCode);
+        code.setDate(new Date());
         return this.codeQualityRepository.save(code);
     }
 

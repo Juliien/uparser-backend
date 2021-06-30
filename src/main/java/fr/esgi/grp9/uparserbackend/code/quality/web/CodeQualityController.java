@@ -4,13 +4,12 @@ import fr.esgi.grp9.uparserbackend.code.quality.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.quality.domain.CodeQualityServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/quality")
+@RequestMapping("/code")
 public class CodeQualityController {
 
     private final CodeQualityServiceImpl codeQualityService;
@@ -19,7 +18,7 @@ public class CodeQualityController {
         this.codeQualityService = codeQualityService;
     }
 
-    @PostMapping
+    @PostMapping("/quality")
     public ResponseEntity<Code> postCode(@RequestBody Code code) {
         try {
             Code codeVerified = this.codeQualityService.testCode(code);
@@ -31,5 +30,18 @@ public class CodeQualityController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<Code>> getUserByEmail(@RequestParam String userId) {
+        if(userId != null) {
+            try {
+                return new ResponseEntity<>( this.codeQualityService.getUserCodeHistory(userId), HttpStatus.OK);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
