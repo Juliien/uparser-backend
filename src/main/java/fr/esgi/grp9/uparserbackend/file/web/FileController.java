@@ -45,8 +45,13 @@ public class FileController {
     }
 
     @PutMapping
-    public ResponseEntity<File> modifyFile(@RequestBody final File file){
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<File> updateFile(@RequestBody final File file){
+        try{
+            File _file = fileService.updateFile(file);
+            return new ResponseEntity<>(_file, HttpStatus.OK);
+        } catch (Exception exception){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")

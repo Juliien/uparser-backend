@@ -34,6 +34,14 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public File updateFile(File file) {
+        File old_file = fileRepository.findById(file.getId()).orElseThrow(() -> new NotFoundWithIdException("File", file.getId()));
+        file.setCreationDate(old_file.getCreationDate());
+        file.setRunDate(old_file.getRunDate());
+        return fileRepository.save(file);
+    }
+
+    @Override
     public List<File> getFiles() {
         return fileRepository.findAll();
     }
