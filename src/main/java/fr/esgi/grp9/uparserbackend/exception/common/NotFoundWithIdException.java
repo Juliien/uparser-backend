@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.common.exception;
+package fr.esgi.grp9.uparserbackend.exception.common;
 
 import lombok.extern.slf4j.Slf4j;
 

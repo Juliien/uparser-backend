@@ -1,6 +1,6 @@
 package fr.esgi.grp9.uparserbackend.file.web;
 
-import fr.esgi.grp9.uparserbackend.common.exception.NotFoundWithIdException;
+import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
 import fr.esgi.grp9.uparserbackend.file.domain.File;
 import fr.esgi.grp9.uparserbackend.file.domain.FileServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/files")
 public class FileController {
     private final FileServiceImpl fileService;
 
@@ -28,8 +28,7 @@ public class FileController {
         try {
             return new ResponseEntity<>(fileService.findFileById(id), HttpStatus.OK);
         } catch (NotFoundWithIdException notFoundWithIdException){
-            System.out.println(notFoundWithIdException.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -62,12 +61,12 @@ public class FileController {
         if (_fileExist != null) {
             try {
                 fileService.deleteFileById(id);
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (Exception exception) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

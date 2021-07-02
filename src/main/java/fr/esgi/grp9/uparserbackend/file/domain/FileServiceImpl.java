@@ -1,6 +1,8 @@
 package fr.esgi.grp9.uparserbackend.file.domain;
 
-import fr.esgi.grp9.uparserbackend.common.exception.NotFoundWithIdException;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
+import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
+import fr.esgi.grp9.uparserbackend.exception.file.FileNameEmptyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,21 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File createFile(File file) {
-        return fileRepository.save(
-                File.builder()
-                        .fileName(file.getFileName())
-                        .filePath(file.getFilePath())
-                        .creationDate(LocalDate.now())
-                        .runDate(null)
-                        .build()
-        );
+//        if(file.getFilePath().equals(""))
+//            throw new FileNameEmptyException("File name can't be empty");
+        try {
+            return fileRepository.save(
+                    File.builder()
+                            .fileName(file.getFileName())
+                            .filePath(file.getFilePath())
+                            .creationDate(LocalDate.now())
+                            .runDate(null)
+                            .build()
+            );
+        } catch (Exception valueInstantiationException){
+            valueInstantiationException.getMessage();
+        }
+        return file;
     }
 
     @Override
