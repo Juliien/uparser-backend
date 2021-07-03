@@ -20,8 +20,6 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File createFile(File file) {
-//        if(file.getFilePath().equals(""))
-//            throw new FileNameEmptyException("File name can't be empty");
         try {
             return fileRepository.save(
                     File.builder()

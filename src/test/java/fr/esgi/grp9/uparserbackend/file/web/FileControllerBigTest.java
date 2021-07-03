@@ -2,7 +2,6 @@ package fr.esgi.grp9.uparserbackend.file.web;
 
 import com.jayway.restassured.http.ContentType;
 import fr.esgi.grp9.uparserbackend.AbstractBigTest;
-import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
 import fr.esgi.grp9.uparserbackend.file.domain.File;
 import org.junit.After;
 import org.junit.Assert;
@@ -111,7 +110,7 @@ public class FileControllerBigTest extends AbstractBigTest {
                 .statusCode(OK.value())
                 .extract()
                 .as(File.class);
-        Assert.assertEquals(fetchedFile, this.file);
+        Assert.assertEquals(this.file, fetchedFile);
     }
 
     @Test
@@ -150,7 +149,7 @@ public class FileControllerBigTest extends AbstractBigTest {
                 .then()
                 .extract()
                 .as(File.class);
-        Assert.assertEquals(fetchedFile, updateFile);
+        Assert.assertEquals(updateFile, fetchedFile);
     }
 
     @Test
@@ -186,7 +185,7 @@ public class FileControllerBigTest extends AbstractBigTest {
     }
 
     @Test
-    public void should_not_get_file_by_id_with_wrong_id() {
+    public void should_bad_request_when_get_file_by_id_with_wrong_id() {
         String wrongFileId = "impossible";
         given()
                 .headers(
