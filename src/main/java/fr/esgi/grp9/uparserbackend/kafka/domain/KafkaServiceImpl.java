@@ -42,7 +42,7 @@ public class KafkaServiceImpl implements KafkaService{
 
     @Override
     public ProducerRecord<String, KafkaTransaction> createProducerRecord(KafkaTransaction kafkaTransaction) {
-        return new ProducerRecord<String, KafkaTransaction>(this.topicNameProduce, kafkaTransaction.getUserId(), kafkaTransaction);
+        return new ProducerRecord<String, KafkaTransaction>(this.topicNameProduce, kafkaTransaction.getId(), kafkaTransaction);
     }
 
     @Override
@@ -54,11 +54,11 @@ public class KafkaServiceImpl implements KafkaService{
     public ParserMetaData sendProducerRecord(KafkaTransaction kafkaTransaction) throws ExecutionException, InterruptedException, TimeoutException {
         RecordMetadata result = null;
 
-        Properties props = propertiesProvider("produce", kafkaTransaction.getRunId());
+        Properties props = propertiesProvider("produce", kafkaTransaction.getId());
         KafkaProducer<String, KafkaTransaction> kafkaProducer = new KafkaProducer<String, KafkaTransaction>(props);
 
         ProducerRecord<String, KafkaTransaction> producerRecord = new ProducerRecord<String, KafkaTransaction>(
-                this.topicNameProduce, kafkaTransaction.getUserId(), kafkaTransaction);
+                this.topicNameProduce, kafkaTransaction.getId(), kafkaTransaction);
 
         Future<RecordMetadata> futureResult = kafkaProducer.send(producerRecord);
         try{
@@ -108,8 +108,8 @@ public class KafkaServiceImpl implements KafkaService{
 //                System.out.printf("KAFKA | CONSUME     topic = %s    Partition = %d     Offset = %d     Value = %s\n",
 //                        record.topic(), record.partition(), record.offset(), record.value());
                 kafkaTransaction = record.value();
-                if(kafkaTransaction.getRunId() != null){
-                    if(kafkaTransaction.getRunId().equals(soughtRunId)){
+                if(kafkaTransaction.getId() != null){
+                    if(kafkaTransaction.getId().equals(soughtRunId)){
                         keep = false;
                         consumer.commitSync();
                         consumer.close();
