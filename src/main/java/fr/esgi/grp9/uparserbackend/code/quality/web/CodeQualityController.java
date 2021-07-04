@@ -32,11 +32,11 @@ public class CodeQualityController {
         }
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<List<Code>> getUserByEmail(@RequestParam String userId) {
-        if(userId != null) {
+    @GetMapping("/history/{id}")
+    public ResponseEntity<List<Code>> getCodeHistory(@PathVariable String id) {
+        if(id != null) {
             try {
-                return new ResponseEntity<>( this.codeQualityService.getUserCodeHistory(userId), HttpStatus.OK);
+                return new ResponseEntity<>( this.codeQualityService.getUserCodeHistory(id), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,6 +1,5 @@
 package fr.esgi.grp9.uparserbackend.kafka.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -9,31 +8,20 @@ import org.springframework.data.annotation.Id;
 @Builder
 public class KafkaTransaction {
 
-    public KafkaTransaction() {
-    }
-
-    public KafkaTransaction(String runId, String userId, String fileName, String fileContent, String code, String extensionEnd, String language) {
-        this.runId = runId;
-        this.userId = userId;
-        this.fileName = fileName;
-        this.fileContent = fileContent;
-        this.code = code;
-        this.extensionEnd = extensionEnd;
+    public KafkaTransaction(String id, String inputfile, String from, String to, String algorithm, String language) {
+        this.id = id;
+        this.inputfile = inputfile;
+        this.from = from;
+        this.to = to;
+        this.algorithm = algorithm;
         this.language = language;
     }
 
     @Id
-    private String runId;
-    @JsonProperty
-    private String userId;
-    @JsonProperty
-    private String fileName;
-    @JsonProperty
-    private String fileContent;
-    @JsonProperty
-    private String code;
-    @JsonProperty
-    private String extensionEnd;
-    @JsonProperty
+    private String id;
+    private String inputfile;
+    private String from;
+    private String to;
+    private String algorithm;
     private String language;
 }
