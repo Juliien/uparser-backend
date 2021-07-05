@@ -8,5 +8,4 @@ import java.util.Optional;
 @Repository
 public interface RunRepository extends MongoRepository<Run, String> {
     Optional<Run> findById(String id);
-    void deleteById(String id);
 }

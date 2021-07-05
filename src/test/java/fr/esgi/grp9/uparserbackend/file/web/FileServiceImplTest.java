@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 
@@ -26,7 +27,7 @@ public class FileServiceImplTest {
     private File file = File.builder()
             .fileName("nameTest")
             .filePath("a/path")
-            .creationDate(LocalDate.now())
+            .creationDate(LocalDateTime.now())
             .build();
 
     @Test

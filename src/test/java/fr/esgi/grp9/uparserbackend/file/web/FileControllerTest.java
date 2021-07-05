@@ -1,6 +1,5 @@
 package fr.esgi.grp9.uparserbackend.file.web;
 
-import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
 import fr.esgi.grp9.uparserbackend.file.domain.File;
 import fr.esgi.grp9.uparserbackend.file.domain.FileServiceImpl;
 import org.junit.Assert;
@@ -12,7 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 
@@ -27,7 +26,7 @@ public class FileControllerTest {
     private final File file = File.builder()
             .fileName("nameTest")
             .filePath("a/path")
-            .creationDate(LocalDate.now())
+            .creationDate(LocalDateTime.now())
             .build();
 
     @Test

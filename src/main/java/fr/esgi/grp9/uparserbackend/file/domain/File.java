@@ -7,8 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -23,7 +22,5 @@ public class File {
     @Field(value = "filepath")
     private String filePath;
     @Field(value = "creation_date")
-    private LocalDate creationDate;
-    @Field(value = "run_date")
-    private Date runDate;
+    private LocalDateTime creationDate;
 }

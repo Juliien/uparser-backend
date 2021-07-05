@@ -1,6 +1,6 @@
 package fr.esgi.grp9.uparserbackend.run.web;
 
-import fr.esgi.grp9.uparserbackend.common.exception.NotFoundWithIdException;
+import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
 import fr.esgi.grp9.uparserbackend.run.domain.Run;
 import fr.esgi.grp9.uparserbackend.run.domain.RunService;
 import fr.esgi.grp9.uparserbackend.user.domain.UserService;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/run")
+@RequestMapping("/runs")
 public class RunController {
     private final RunService runService;
     private final UserService userService;
@@ -44,7 +44,7 @@ public class RunController {
     public ResponseEntity<Run> createRun(@RequestBody final Run run) {
 
         try {
-            //TODO faire en sorte que get by email tthrow une erreur
+            //TODO faire en sorte que get by email throw une erreur
             userService.findUserByEmail(run.getUserEmail());
 //            fileService.findFileById(run.getFileId());
             Run _run = runService.createRun(run);
@@ -56,10 +56,10 @@ public class RunController {
     }
 
     @PutMapping
-    public ResponseEntity<Run> modifyRun(@RequestBody final Run run){
+    public ResponseEntity<Run> updateRun(@RequestBody final Run run){
         try {
             runService.findRunById(run.getId());
-            return new ResponseEntity<>(runService.modifyRun(run), HttpStatus.OK);
+            return new ResponseEntity<>(runService.updateRun(run), HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

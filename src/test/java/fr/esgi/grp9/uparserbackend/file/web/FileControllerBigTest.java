@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static com.jayway.restassured.RestAssured.*;
 import static com.jayway.restassured.http.ContentType.JSON;
@@ -22,7 +23,7 @@ public class FileControllerBigTest extends AbstractBigTest {
     private final File file = File.builder()
             .fileName("nameTest")
             .filePath("a/path")
-            .creationDate(LocalDate.now())
+            .creationDate(LocalDateTime.now())
             .build();
 
     @Before
@@ -119,7 +120,7 @@ public class FileControllerBigTest extends AbstractBigTest {
                 .id(this.currentFileId)
                 .fileName("nameTestUpdated")
                 .filePath("a/path/updated")
-                .creationDate(LocalDate.now())
+                .creationDate(LocalDateTime.now())
                 .build();
 
         given()

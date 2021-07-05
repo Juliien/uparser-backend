@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,8 +26,7 @@ public class FileServiceImpl implements FileService {
                     File.builder()
                             .fileName(file.getFileName())
                             .filePath(file.getFilePath())
-                            .creationDate(LocalDate.now())
-                            .runDate(null)
+                            .creationDate(LocalDateTime.now())
                             .build()
             );
         } catch (Exception valueInstantiationException){
@@ -44,7 +44,6 @@ public class FileServiceImpl implements FileService {
     public File updateFile(File file) {
         File old_file = fileRepository.findById(file.getId()).orElseThrow(() -> new NotFoundWithIdException("File", file.getId()));
         file.setCreationDate(old_file.getCreationDate());
-        file.setRunDate(old_file.getRunDate());
         return fileRepository.save(file);
     }
 
