@@ -14,6 +14,9 @@ public class CodeQualityServiceImpl implements CodeQualityService {
         this.codeQualityRepository = codeQualityRepository;
     }
 
+    public List<Code> findAllCodes() {
+        return this.codeQualityRepository.findAll();
+    }
     @Override
     public List<Code> getUserCodeHistory(String userId) {
         return this.codeQualityRepository.findAllByUserId(userId);
@@ -27,7 +30,7 @@ public class CodeQualityServiceImpl implements CodeQualityService {
             return null;
         }
         String userCode = this.decodeCode(code);
-        this.parseCode(userCode);
+//        this.parseCode(userCode);
         code.setDate(new Date());
         return this.codeQualityRepository.save(code);
     }

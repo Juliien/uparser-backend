@@ -18,6 +18,11 @@ public class CodeQualityController {
         this.codeQualityService = codeQualityService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Code>> getAllCodes(){
+        return new ResponseEntity<>(this.codeQualityService.findAllCodes(), HttpStatus.OK);
+    }
+
     @PostMapping("/quality")
     public ResponseEntity<Code> postCode(@RequestBody Code code) {
         try {
