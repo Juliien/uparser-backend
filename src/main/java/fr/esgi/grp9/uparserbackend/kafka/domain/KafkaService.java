@@ -1,5 +1,8 @@
 package fr.esgi.grp9.uparserbackend.kafka.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import fr.esgi.grp9.uparserbackend.run.domain.Run;
+import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -12,7 +15,6 @@ public interface KafkaService {
     Properties propertiesProvider(String action, String groupId);
     ProducerRecord<String, KafkaTransaction> createProducerRecord(KafkaTransaction kafkaTransaction);
     Producer<String, KafkaTransaction> createKafkaProducer(String groupId);
-    KafkaConsumer<String, KafkaTransaction> createKafkaConsumer(String groupId);
-//    ParserMetaData createParserMetaData(RecordMetadata recordMetadata);
-    KafkaTransaction seekForRunnerResults(String runId);
+    KafkaConsumer<String, String> createKafkaConsumer(String groupId);
+    RunRaw seekForRunnerResults(String runId) throws JsonProcessingException;
 }

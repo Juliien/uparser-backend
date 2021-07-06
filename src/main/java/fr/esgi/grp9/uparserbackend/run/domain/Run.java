@@ -13,6 +13,18 @@ import java.util.Hashtable;
 @Builder
 @Document(collection = "runs")
 public class Run {
+
+    public Run(String id, String userEmail, String codeId, String stdout, String stderr, String artifact, Hashtable<String, String> stats, LocalDateTime creationDate) {
+        this.id = id;
+        this.userEmail = userEmail;
+        this.codeId = codeId;
+        this.stdout = stdout;
+        this.stderr = stderr;
+        this.artifact = artifact;
+        this.stats = stats;
+        this.creationDate = creationDate;
+    }
+
     @Id
     private String id;
     @Field(value = "user_email")
