@@ -3,6 +3,8 @@ package fr.esgi.grp9.uparserbackend.kafka.web;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaServiceImpl;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import fr.esgi.grp9.uparserbackend.kafka.domain.ParserMetaData;
+import fr.esgi.grp9.uparserbackend.run.domain.Run;
+import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -23,7 +28,12 @@ public class KafkaController {
     }
 
     @PostMapping("/produce")
-    public ResponseEntity<KafkaTransaction> produce(@RequestBody final KafkaTransaction kafkaTransaction) {
+    public ResponseEntity<Run> produce(@RequestBody final KafkaTransaction kafkaTransaction) {
+        String transactionId = UUID.randomUUID().toString();
+        kafkaTransaction.setId(transactionId);
+
+        kafkaTransaction.setAlgorithm(Base64.getEncoder().encodeToString(kafkaTransaction.getAlgorithm().getBytes()));
+        kafkaTransaction.setInputfile(Base64.getEncoder().encodeToString(kafkaTransaction.getInputfile().getBytes()));
 
         //TODO get les files par id
         String _fileExist = "";
@@ -42,11 +52,22 @@ public class KafkaController {
 
             if (parserMetaData != null) {
                 try {
-                    KafkaTransaction runnerResult = uParserProducerService.seekForRunnerResults(kafkaTransaction.getId());
+                    RunRaw runnerOutput = uParserProducerService.seekForRunnerResults(kafkaTransaction.getId());
+
+                    Run runResult = Run.builder()
+                            .id(runnerOutput.getRun_id())
+                            .userEmail(null)
+                            .codeId(null)
+                            .stdout(runnerOutput.getStdout())
+                            .stderr(runnerOutput.getStderr())
+                            .artifact(runnerOutput.getArtifact())
+                            .stats(null)
+                            .creationDate(LocalDateTime.now())
+                            .build();
 
                     //TODO faire l'envoi dans le bdd ici en fonction des résultats du run
 
-                    return new ResponseEntity<>(runnerResult, HttpStatus.OK);
+                    return new ResponseEntity<>(runResult, HttpStatus.OK);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

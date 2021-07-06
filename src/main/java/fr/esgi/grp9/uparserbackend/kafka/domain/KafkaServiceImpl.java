@@ -1,4 +1,8 @@
 package fr.esgi.grp9.uparserbackend.kafka.domain;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.esgi.grp9.uparserbackend.run.domain.Run;
+import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -46,9 +50,9 @@ public class KafkaServiceImpl implements KafkaService{
     }
 
     @Override
-    public KafkaConsumer<String, KafkaTransaction> createKafkaConsumer(String groupId) {
+    public KafkaConsumer<String, String> createKafkaConsumer(String groupId) {
         Properties properties = propertiesProvider("consume", groupId);
-        return  new KafkaConsumer<String, KafkaTransaction>(properties);
+        return  new KafkaConsumer<String, String>(properties);
     }
 
     public ParserMetaData sendProducerRecord(KafkaTransaction kafkaTransaction) throws ExecutionException, InterruptedException, TimeoutException {
@@ -82,34 +86,32 @@ public class KafkaServiceImpl implements KafkaService{
                 result.serializedValueSize());
     }
 
-//    @Override
-//    public ParserMetaData createParserMetaData(RecordMetadata recordMetadata) {
-//        return new ParserMetaData(recordMetadata.topic(),
-//                recordMetadata.partition(),
-//                recordMetadata.offset(),
-//                recordMetadata.timestamp(),
-//                recordMetadata.serializedKeySize(),
-//                recordMetadata.serializedValueSize());
-//    }
-
     @Override
-    public KafkaTransaction seekForRunnerResults(String soughtRunId) {
-        KafkaConsumer<String, KafkaTransaction> consumer = createKafkaConsumer(soughtRunId);
+    public RunRaw seekForRunnerResults(String soughtRunId) throws JsonProcessingException {
+        KafkaConsumer<String, String> consumer = createKafkaConsumer(soughtRunId);
         consumer.subscribe(Collections.singletonList(topicNameConsume));
 
         boolean keep = true;
-        KafkaTransaction kafkaTransaction = null;
+        RunRaw run = null;
 
         while (keep) {
-            ConsumerRecords<String, KafkaTransaction> consumerRecords =
+            ConsumerRecords<String, String> consumerRecords =
                     consumer.poll(Duration.ofMillis(3000));
 
-            for (ConsumerRecord<String, KafkaTransaction> record : consumerRecords) {
-//                System.out.printf("KAFKA | CONSUME     topic = %s    Partition = %d     Offset = %d     Value = %s\n",
-//                        record.topic(), record.partition(), record.offset(), record.value());
-                kafkaTransaction = record.value();
-                if(kafkaTransaction.getId() != null){
-                    if(kafkaTransaction.getId().equals(soughtRunId)){
+            for (ConsumerRecord<String, String> record : consumerRecords) {
+
+                String recordString = record.value();
+
+                if (String.valueOf(record.value().charAt(0)).equals("\"") && String.valueOf(record.value().charAt(recordString.length()-1)).equals("\""))
+                    recordString = record.value().substring(1, record.value().length() - 1);
+
+                recordString = recordString.replace("'stdout': b", "'stdout': ");
+                recordString = recordString.replace("'stderr': b", "'stderr': ");
+                recordString = recordString.replace("\'", "\"");
+
+                run = new ObjectMapper().readValue(recordString, RunRaw.class);
+                if(run.getRun_id() != null){
+                    if(run.getRun_id().equals(soughtRunId)){
                         keep = false;
                         consumer.commitSync();
                         consumer.close();
@@ -118,7 +120,7 @@ public class KafkaServiceImpl implements KafkaService{
                 }
             }
         }
-        return kafkaTransaction;
+        return run;
     }
 
     @Override
@@ -143,7 +145,7 @@ public class KafkaServiceImpl implements KafkaService{
                 props.put("key.deserializer",
                         "org.apache.kafka.common.serialization.StringDeserializer");
                 props.put("value.deserializer",
-                        "fr.esgi.grp9.uparserbackend.kafka.domain.serde.TransactionDeserializer");
+                        "org.apache.kafka.common.serialization.StringDeserializer");
                 break;
             case "produce":
                 props.put("max.block.ms", 3000);
