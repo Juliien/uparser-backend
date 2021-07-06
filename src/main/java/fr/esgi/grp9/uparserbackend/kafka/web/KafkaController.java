@@ -32,9 +32,6 @@ public class KafkaController {
         String transactionId = UUID.randomUUID().toString();
         kafkaTransaction.setId(transactionId);
 
-        kafkaTransaction.setAlgorithm(Base64.getEncoder().encodeToString(kafkaTransaction.getAlgorithm().getBytes()));
-        kafkaTransaction.setInputfile(Base64.getEncoder().encodeToString(kafkaTransaction.getInputfile().getBytes()));
-
         //TODO get les files par id
         String _fileExist = "";
         ParserMetaData parserMetaData;
