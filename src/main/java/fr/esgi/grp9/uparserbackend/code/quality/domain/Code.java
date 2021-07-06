@@ -15,5 +15,8 @@ public class Code {
     private String id;
     private String userId;
     private String codeEncoded;
+    private String extensionStart;
+    private String extensionEnd;
+    private String language;
     private Date date;
 }
