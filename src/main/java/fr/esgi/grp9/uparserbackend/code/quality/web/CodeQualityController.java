@@ -23,6 +23,11 @@ public class CodeQualityController {
         return new ResponseEntity<>(this.codeQualityService.findAllCodes(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Code> getAllCodes(@PathVariable String id){
+        return new ResponseEntity<>(this.codeQualityService.findById(id).get(), HttpStatus.OK);
+    }
+
     @PostMapping("/quality")
     public ResponseEntity<Code> postCode(@RequestBody Code code) {
         try {

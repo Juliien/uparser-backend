@@ -38,6 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/email").permitAll()
                 .antMatchers("/code/all").permitAll()
+                .antMatchers("/code/{id}").permitAll()
+                .antMatchers("/kafka/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
