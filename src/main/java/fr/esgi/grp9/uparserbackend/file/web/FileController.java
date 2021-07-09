@@ -23,6 +23,11 @@ public class FileController {
         return new ResponseEntity<>(this.fileService.getFiles(), HttpStatus.OK);
     }
 
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<File>> getFilesByUserId(@PathVariable String id) {
+        return new ResponseEntity<>(this.fileService.getFilesByUserId(id), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<File> getFileById(@PathVariable String id){
         try {
@@ -43,16 +48,6 @@ public class FileController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<File> updateFile(@RequestBody final File file){
-        try{
-            File _file = fileService.updateFile(file);
-            return new ResponseEntity<>(_file, HttpStatus.OK);
-        } catch (Exception exception){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable String id) {
 
@@ -68,5 +63,4 @@ public class FileController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
 }

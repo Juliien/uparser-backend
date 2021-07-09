@@ -1,13 +1,10 @@
 package fr.esgi.grp9.uparserbackend.file.domain;
 
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
-import fr.esgi.grp9.uparserbackend.exception.file.FileNameEmptyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,9 +21,10 @@ public class FileServiceImpl implements FileService {
         try {
             return fileRepository.save(
                     File.builder()
+                            .userId(file.getUserId())
                             .fileName(file.getFileName())
-                            .filePath(file.getFilePath())
-                            .creationDate(LocalDateTime.now())
+                            .fileContent(file.getFileContent())
+                            .createDate(new Date())
                             .build()
             );
         } catch (Exception valueInstantiationException){
@@ -41,15 +39,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File updateFile(File file) {
-        File old_file = fileRepository.findById(file.getId()).orElseThrow(() -> new NotFoundWithIdException("File", file.getId()));
-        file.setCreationDate(old_file.getCreationDate());
-        return fileRepository.save(file);
+    public List<File> getFiles() {
+        return fileRepository.findAll();
     }
 
     @Override
-    public List<File> getFiles() {
-        return fileRepository.findAll();
+    public List<File> getFilesByUserId(String userId) {
+        return null;
     }
 
     @Override
