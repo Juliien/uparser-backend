@@ -22,6 +22,8 @@ public class File {
     private String fileName;
     @Field(value = "file_content")
     private String fileContent;
+    @Field(value = "file_extension")
+    private String fileExtension;
     @Field(value = "create_date")
     private Date createDate;
 }

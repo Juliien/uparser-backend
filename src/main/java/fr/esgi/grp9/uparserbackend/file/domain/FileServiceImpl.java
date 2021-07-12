@@ -24,6 +24,7 @@ public class FileServiceImpl implements FileService {
                             .userId(file.getUserId())
                             .fileName(file.getFileName())
                             .fileContent(file.getFileContent())
+                            .fileExtension(file.getFileExtension())
                             .createDate(new Date())
                             .build()
             );
@@ -45,7 +46,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<File> getFilesByUserId(String userId) {
-        return null;
+        return this.fileRepository.findAllByUserId(userId);
     }
 
     @Override
