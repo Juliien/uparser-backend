@@ -1,5 +1,7 @@
-package fr.esgi.grp9.uparserbackend.code.quality.domain;
+package fr.esgi.grp9.uparserbackend.code.domain.quality;
 
+import fr.esgi.grp9.uparserbackend.code.domain.Code;
+import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -8,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CodeQualityServiceImpl implements CodeQualityService {
-    private final CodeQualityRepository codeQualityRepository;
+public class QualityServiceImpl implements QualityService {
+    private final CodeRepository codeQualityRepository;
 
-    public CodeQualityServiceImpl(CodeQualityRepository codeQualityRepository) {
+    public QualityServiceImpl(CodeRepository codeQualityRepository) {
         this.codeQualityRepository = codeQualityRepository;
     }
 

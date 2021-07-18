@@ -1,7 +1,7 @@
-package fr.esgi.grp9.uparserbackend.code.quality.web;
+package fr.esgi.grp9.uparserbackend.code.web;
 
-import fr.esgi.grp9.uparserbackend.code.quality.domain.Code;
-import fr.esgi.grp9.uparserbackend.code.quality.domain.CodeQualityServiceImpl;
+import fr.esgi.grp9.uparserbackend.code.domain.Code;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.QualityServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,9 @@ import java.util.List;
 @RequestMapping("/code")
 public class CodeQualityController {
 
-    private final CodeQualityServiceImpl codeQualityService;
+    private final QualityServiceImpl codeQualityService;
 
-    public CodeQualityController(CodeQualityServiceImpl codeQualityService) {
+    public CodeQualityController(QualityServiceImpl codeQualityService) {
         this.codeQualityService = codeQualityService;
     }
 
@@ -24,7 +24,7 @@ public class CodeQualityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Code> getAllCodes(@PathVariable String id){
+    public ResponseEntity<Code> getCodeById(@PathVariable String id){
         return new ResponseEntity<>(this.codeQualityService.findById(id).get(), HttpStatus.OK);
     }
 
