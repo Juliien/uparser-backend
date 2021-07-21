@@ -6,13 +6,17 @@ import java.util.List;
 
 @Service
 public class CodeService {
-    private final CodeRepository codeQualityRepository;
+    private final CodeRepository codeRepository;
 
-    public CodeService(CodeRepository codeQualityRepository) {
-        this.codeQualityRepository = codeQualityRepository;
+    public CodeService(CodeRepository codeRepository) {
+        this.codeRepository = codeRepository;
     }
 
     public List<Code> getUserCodeHistory(String userId) {
-        return this.codeQualityRepository.findAllByUserId(userId);
+        return this.codeRepository.findAllByUserId(userId);
+    }
+
+    public Code addCode(Code code) {
+        return this.codeRepository.save(code);
     }
 }
