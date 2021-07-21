@@ -4,12 +4,13 @@ import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.quality.QualityServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/code")
+@RequestMapping("/quality")
 public class CodeQualityController {
 
     private final QualityServiceImpl codeQualityService;
@@ -18,17 +19,7 @@ public class CodeQualityController {
         this.codeQualityService = codeQualityService;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Code>> getAllCodes(){
-        return new ResponseEntity<>(this.codeQualityService.findAllCodes(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Code> getCodeById(@PathVariable String id){
-        return new ResponseEntity<>(this.codeQualityService.findById(id).get(), HttpStatus.OK);
-    }
-
-    @PostMapping("/quality")
+    @PostMapping
     public ResponseEntity<Code> postCode(@RequestBody Code code) {
         try {
             Code codeVerified = this.codeQualityService.testCode(code);
@@ -40,18 +31,5 @@ public class CodeQualityController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping("/history/{id}")
-    public ResponseEntity<List<Code>> getCodeHistory(@PathVariable String id) {
-        if(id != null) {
-            try {
-                return new ResponseEntity<>( this.codeQualityService.getUserCodeHistory(id), HttpStatus.OK);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

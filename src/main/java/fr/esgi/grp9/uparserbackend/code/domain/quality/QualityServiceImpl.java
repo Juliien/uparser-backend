@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class QualityServiceImpl implements QualityService {
@@ -15,18 +13,6 @@ public class QualityServiceImpl implements QualityService {
 
     public QualityServiceImpl(CodeRepository codeQualityRepository) {
         this.codeQualityRepository = codeQualityRepository;
-    }
-
-    public List<Code> findAllCodes() {
-        return this.codeQualityRepository.findAll();
-    }
-
-    public Optional<Code> findById(String id) {
-        return this.codeQualityRepository.findById(id);
-    }
-    @Override
-    public List<Code> getUserCodeHistory(String userId) {
-        return this.codeQualityRepository.findAllByUserId(userId);
     }
 
     @Override

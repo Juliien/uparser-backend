@@ -15,9 +15,7 @@ public class RunRaw {
         this.artifact = artifact;
     }
 
-    public RunRaw() {
-
-    }
+    public RunRaw() {}
 
     @JsonProperty("run_id")
     private String run_id;
