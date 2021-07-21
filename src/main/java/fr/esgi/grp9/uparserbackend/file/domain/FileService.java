@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface FileService {
     File createFile(File file);
     File findFileById(String id);
-    File updateFile(File file);
     List<File> getFiles();
+    List<File> getFilesByUserId(String userId);
     void deleteFileById(String id);
 }

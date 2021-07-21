@@ -1,23 +1,25 @@
 package fr.esgi.grp9.uparserbackend.kafka.domain;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.esgi.grp9.uparserbackend.run.domain.Run;
 import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.OutOfOrderSequenceException;
 import org.apache.kafka.common.errors.ProducerFencedException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Collections;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -126,15 +128,6 @@ public class KafkaServiceImpl implements KafkaService{
     @Override
     public Properties propertiesProvider(String action, String groupId) {
         Properties props = new Properties();
-
-        //TODO implement timeout behaviour of consumer and producer
-        // properties utiles pour configurer le cas de figure où le cluster KAFKA ne fonctionne pas
-//        props.put("socket.connection.setup.timeout.max.ms", 3000);
-//        props.put("socket.connection.setup.timeout.ms", 3000);
-//        props.put("request.timeout.ms", 5000);
-//        props.put("linger.ms", 5000);
-//        props.put("delivery.timeout.ms", 10000);
-
         props.put("bootstrap.servers", brokerAddress + ":" + brokerPort);
 
         switch (action){
@@ -154,7 +147,6 @@ public class KafkaServiceImpl implements KafkaService{
                 props.put("value.serializer",
                         "fr.esgi.grp9.uparserbackend.kafka.domain.serde.TransactionSerializer");
         }
-
         return props;
     }
 

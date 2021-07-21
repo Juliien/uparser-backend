@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 
@@ -25,8 +26,8 @@ public class FileControllerTest {
 
     private final File file = File.builder()
             .fileName("nameTest")
-            .filePath("a/path")
-            .creationDate(LocalDateTime.now())
+            .fileContent("a/path")
+            .createDate(new Date())
             .build();
 
     @Test
@@ -47,11 +48,5 @@ public class FileControllerTest {
         ResponseEntity<File> responseEntity = fileController.createFile(this.file);
         verify(fileService).createFile(this.file);
         Assert.assertEquals(new ResponseEntity<>(this.file, HttpStatus.CREATED), responseEntity);
-    }
-
-    @Test
-    public void should_update_new_file() {
-        fileController.updateFile(this.file);
-        verify(fileService).updateFile(this.file);
     }
 }

@@ -66,7 +66,7 @@ public class KafkaController {
 
                     return new ResponseEntity<>(runResult, HttpStatus.OK);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {

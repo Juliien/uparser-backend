@@ -1,29 +1,23 @@
-package fr.esgi.grp9.uparserbackend.code.quality.domain;
+package fr.esgi.grp9.uparserbackend.code.domain.quality;
 
+import fr.esgi.grp9.uparserbackend.code.domain.Code;
+import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Service
-public class CodeQualityServiceImpl implements CodeQualityService {
-    private final CodeQualityRepository codeQualityRepository;
+public class QualityServiceImpl implements QualityService {
+    private final CodeRepository codeQualityRepository;
 
-    public CodeQualityServiceImpl(CodeQualityRepository codeQualityRepository) {
+    public QualityServiceImpl(CodeRepository codeQualityRepository) {
         this.codeQualityRepository = codeQualityRepository;
-    }
-
-    public List<Code> findAllCodes() {
-        return this.codeQualityRepository.findAll();
-    }
-    @Override
-    public List<Code> getUserCodeHistory(String userId) {
-        return this.codeQualityRepository.findAllByUserId(userId);
     }
 
     @Override
     public Code testCode(Code code) {
+        //TODO don't save code
         // check copy code
         Code _code = this.checkCodeExist(code);
         if(_code != null && code.getUserId().equals(_code.getUserId())) {

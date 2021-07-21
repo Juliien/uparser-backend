@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.code.quality.domain;
+package fr.esgi.grp9.uparserbackend.code.domain;
 
 import lombok.Builder;
 import lombok.Data;

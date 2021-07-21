@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 
@@ -26,8 +27,8 @@ public class FileServiceImplTest {
 
     private File file = File.builder()
             .fileName("nameTest")
-            .filePath("a/path")
-            .creationDate(LocalDateTime.now())
+            .fileContent("a/path")
+            .createDate(new Date())
             .build();
 
     @Test
@@ -47,23 +48,5 @@ public class FileServiceImplTest {
         String id = "impossible";
         fileServiceImpl.findFileById(id);
         verify(fileRepository).findById(id);
-    }
-
-    @Test(expected = NotFoundWithIdException.class)
-    public void should_throw_NotFoundWithIdException_when_update_nonexistent_file() {
-        this.file.setId("impossible");
-        this.file.setFileName("nameTestUpdated");
-        File updatedFile = fileServiceImpl.updateFile(this.file);
-        verify(fileRepository).save(file);
-        Assert.assertEquals(this.file, updatedFile);
-    }
-
-    @Test(expected = NotFoundWithIdException.class)
-    public void should_throw_NotFoundWithIdException_when_delete_nonexistent_file() {
-        this.file.setId("impossible");
-        this.file.setFileName("nameTestUpdated");
-        File updatedFile = fileServiceImpl.updateFile(this.file);
-        verify(fileRepository).save(file);
-        Assert.assertEquals(this.file, updatedFile);
     }
 }
