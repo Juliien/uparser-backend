@@ -2,12 +2,12 @@ package fr.esgi.grp9.uparserbackend.kafka.web;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeService;
-import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaServiceImpl;
+import fr.esgi.grp9.uparserbackend.kafka.service.KafkaService;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import fr.esgi.grp9.uparserbackend.kafka.domain.ParserMetaData;
 import fr.esgi.grp9.uparserbackend.run.domain.Run;
 import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
-import fr.esgi.grp9.uparserbackend.run.domain.RunServiceImpl;
+import fr.esgi.grp9.uparserbackend.run.service.RunService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +21,12 @@ import java.util.concurrent.TimeoutException;
 @RestController
 @RequestMapping("/kafka")
 public class KafkaController {
-    private final KafkaServiceImpl uParserProducerService;
+    private final KafkaService uParserProducerService;
     private final CodeService codeService;
-    private final RunServiceImpl runService;
+    private final RunService runService;
 
 
-    public KafkaController(KafkaServiceImpl uParserProducerService, CodeService codeService, RunServiceImpl runService) {
+    public KafkaController(KafkaService uParserProducerService, CodeService codeService, RunService runService) {
         this.uParserProducerService = uParserProducerService;
         this.codeService = codeService;
         this.runService = runService;

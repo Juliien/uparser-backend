@@ -1,7 +1,9 @@
-package fr.esgi.grp9.uparserbackend.kafka.domain;
+package fr.esgi.grp9.uparserbackend.kafka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
+import fr.esgi.grp9.uparserbackend.kafka.domain.ParserMetaData;
 import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -80,12 +82,14 @@ public class KafkaService implements IKafkaService {
             kafkaProducer.close();
         }
 
-        return new ParserMetaData(result.topic(),
-                result.partition(),
-                result.offset(),
-                result.timestamp(),
-                result.serializedKeySize(),
-                result.serializedValueSize());
+        return ParserMetaData.builder()
+                .topic(result.topic())
+                .partition(result.partition())
+                .baseOffset(result.offset())
+                .timestamp(result.timestamp())
+                .serializedKeySize(result.serializedKeySize())
+                .serializedValueSize(result.serializedValueSize())
+                .build();
     }
 
     @Override

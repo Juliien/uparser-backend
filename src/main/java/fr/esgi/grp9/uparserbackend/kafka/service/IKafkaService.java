@@ -1,6 +1,7 @@
-package fr.esgi.grp9.uparserbackend.kafka.domain;
+package fr.esgi.grp9.uparserbackend.kafka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import fr.esgi.grp9.uparserbackend.run.domain.Run;
 import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
