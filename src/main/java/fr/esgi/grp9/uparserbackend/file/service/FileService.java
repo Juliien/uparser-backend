@@ -20,20 +20,7 @@ public class FileService implements IFileService {
 
     @Override
     public File createFile(File file) {
-        try {
-            return fileRepository.save(
-                    File.builder()
-                            .userId(file.getUserId())
-                            .fileName(file.getFileName())
-                            .fileContent(file.getFileContent())
-                            .fileExtension(file.getFileExtension())
-                            .createDate(new Date())
-                            .build()
-            );
-        } catch (Exception valueInstantiationException){
-            valueInstantiationException.getMessage();
-        }
-        return file;
+        return fileRepository.save(file);
     }
 
     @Override
