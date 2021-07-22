@@ -1,7 +1,8 @@
 package fr.esgi.grp9.uparserbackend.mail.web;
 
 import fr.esgi.grp9.uparserbackend.mail.domain.Email;
-import fr.esgi.grp9.uparserbackend.mail.domain.EmailServiceImpl;
+import fr.esgi.grp9.uparserbackend.mail.service.EmailService;
+import fr.esgi.grp9.uparserbackend.mail.service.IEmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/email")
 public class EmailController {
 
-    private final EmailServiceImpl emailService;
+    private final EmailService emailService;
 
-    public EmailController(EmailServiceImpl emailService) {
+    public EmailController(EmailService emailService) {
         this.emailService = emailService;
     }
 

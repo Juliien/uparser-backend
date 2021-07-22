@@ -1,5 +1,6 @@
-package fr.esgi.grp9.uparserbackend.mail.domain;
+package fr.esgi.grp9.uparserbackend.mail.service;
 
+import fr.esgi.grp9.uparserbackend.mail.domain.Email;
 import fr.esgi.grp9.uparserbackend.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,7 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
-public class EmailService implements EmailService {
+public class EmailService implements IEmailService {
     @Autowired
     JavaMailSender mailSender;
 
