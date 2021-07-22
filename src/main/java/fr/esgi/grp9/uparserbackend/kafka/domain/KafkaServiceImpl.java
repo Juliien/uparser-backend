@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Service
-public class KafkaServiceImpl implements KafkaService{
+public class KafkaServiceImpl implements KafkaService {
 
     @Value("${kafka.cluster.topic.produce.name}")
     private String topicNameProduce;
@@ -101,17 +101,7 @@ public class KafkaServiceImpl implements KafkaService{
                     consumer.poll(Duration.ofMillis(3000));
 
             for (ConsumerRecord<String, String> record : consumerRecords) {
-
-                String recordString = record.value();
-
-                if (String.valueOf(record.value().charAt(0)).equals("\"") && String.valueOf(record.value().charAt(recordString.length()-1)).equals("\""))
-                    recordString = record.value().substring(1, record.value().length() - 1);
-
-                recordString = recordString.replace("'stdout': b", "'stdout': ");
-                recordString = recordString.replace("'stderr': b", "'stderr': ");
-                recordString = recordString.replace("\'", "\"");
-
-                run = new ObjectMapper().readValue(recordString, RunRaw.class);
+                run = new ObjectMapper().readValue(record.value(), RunRaw.class);
                 if(run.getRun_id() != null){
                     if(run.getRun_id().equals(soughtRunId)){
                         keep = false;

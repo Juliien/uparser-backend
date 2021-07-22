@@ -20,11 +20,11 @@ public class RunServiceImpl implements RunService{
     public Run createRun(Run run) {
         return runRepository.save(
             Run.builder()
-                .userEmail(run.getUserEmail())
+                .userId(run.getUserId())
                 .codeId(run.getCodeId())
                 .stdout(run.getStdout())
                 .stderr(run.getStderr())
-                .artifact(run.getArtifact())
+                .artifact(null)
                 .stats(run.getStats())
                 .creationDate(LocalDateTime.now())
                 .build()

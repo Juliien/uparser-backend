@@ -14,9 +14,9 @@ import java.util.Hashtable;
 @Document(collection = "runs")
 public class Run {
 
-    public Run(String id, String userEmail, String codeId, String stdout, String stderr, String artifact, Hashtable<String, String> stats, LocalDateTime creationDate) {
+    public Run(String id, String userId, String codeId, String stdout, String stderr, String artifact, Hashtable<String, String> stats, LocalDateTime creationDate) {
         this.id = id;
-        this.userEmail = userEmail;
+        this.userId = userId;
         this.codeId = codeId;
         this.stdout = stdout;
         this.stderr = stderr;
@@ -27,8 +27,8 @@ public class Run {
 
     @Id
     private String id;
-    @Field(value = "user_email")
-    private String userEmail;
+    @Field(value = "user_id")
+    private String userId;
     @Field(value = "code_id")
     private String codeId;
     @Field(value = "stdout")

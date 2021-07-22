@@ -7,6 +7,7 @@ import fr.esgi.grp9.uparserbackend.user.domain.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -15,14 +16,10 @@ import java.util.List;
 public class RunController {
     private final RunService runService;
     private final UserService userService;
-//    private final FileService fileService;
 
-    public RunController(RunService runService, UserService userService
-//                        , FileService fileService
-    ) {
+    public RunController(RunService runService, UserService userService) {
         this.runService = runService;
         this.userService = userService;
-//        this.fileService = fileService;
     }
 
     @GetMapping
@@ -42,16 +39,11 @@ public class RunController {
 
     @PostMapping
     public ResponseEntity<Run> createRun(@RequestBody final Run run) {
-
         try {
-            //TODO faire en sorte que get by email throw une erreur
-            userService.findUserByEmail(run.getUserEmail());
-//            fileService.findFileById(run.getFileId());
-            Run _run = runService.createRun(run);
-            return new ResponseEntity<>(_run, HttpStatus.CREATED);
+            return new ResponseEntity<>(runService.createRun(run), HttpStatus.CREATED);
         } catch (Exception exception){
-            //TODO mettre dans la reponse une explication de ce qu'il manque
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            exception.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
 
