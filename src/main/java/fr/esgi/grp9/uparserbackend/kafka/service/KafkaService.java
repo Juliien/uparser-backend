@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Service
-public class KafkaServiceImpl implements KafkaService {
+public class KafkaService implements IKafkaService {
 
     @Value("${kafka.cluster.topic.produce.name}")
     private String topicNameProduce;

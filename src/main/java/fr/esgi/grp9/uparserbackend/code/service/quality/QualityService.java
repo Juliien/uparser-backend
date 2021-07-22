@@ -8,10 +8,10 @@ import java.util.Base64;
 import java.util.Date;
 
 @Service
-public class QualityServiceImpl implements QualityService {
+public class QualityService implements IQualityService {
     private final CodeRepository codeQualityRepository;
 
-    public QualityServiceImpl(CodeRepository codeQualityRepository) {
+    public QualityService(CodeRepository codeQualityRepository) {
         this.codeQualityRepository = codeQualityRepository;
     }
 
@@ -30,7 +30,7 @@ public class QualityServiceImpl implements QualityService {
     }
 
     private Code checkCodeExist(Code code) {
-            return this.codeQualityRepository.findByCodeEncoded(code.getCodeEncoded());
+        return this.codeQualityRepository.findByCodeEncoded(code.getCodeEncoded());
     }
 
     private String decodeCode(Code code) {

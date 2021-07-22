@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CatalogServiceImpl implements CatalogService {
+public class CatalogService implements ICatalogService {
     private final CodeRepository codeRepository;
 
-    public CatalogServiceImpl(CodeRepository codeRepository) {
+    public CatalogService(CodeRepository codeRepository) {
         this.codeRepository = codeRepository;
     }
 
