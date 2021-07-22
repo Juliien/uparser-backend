@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.code.domain.catalog;
+package fr.esgi.grp9.uparserbackend.code.service.catalog;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;

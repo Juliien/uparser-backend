@@ -19,4 +19,6 @@ public class Code {
     private String extensionEnd;
     private String language;
     private Date date;
+    private boolean isPlagiarism;
+    private boolean isEnable;
 }
