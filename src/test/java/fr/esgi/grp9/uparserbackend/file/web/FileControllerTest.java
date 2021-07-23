@@ -1,7 +1,7 @@
 package fr.esgi.grp9.uparserbackend.file.web;
 
 import fr.esgi.grp9.uparserbackend.file.domain.File;
-import fr.esgi.grp9.uparserbackend.file.domain.FileServiceImpl;
+import fr.esgi.grp9.uparserbackend.file.service.FileService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +11,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.mockito.Mockito.verify;
@@ -22,7 +21,7 @@ public class FileControllerTest {
     @InjectMocks
     FileController fileController;
     @Mock
-    FileServiceImpl fileService;
+    FileService fileService;
 
     private final File file = File.builder()
             .fileName("nameTest")

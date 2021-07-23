@@ -1,7 +1,7 @@
 package fr.esgi.grp9.uparserbackend.code.web;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
-import fr.esgi.grp9.uparserbackend.code.domain.catalog.CatalogServiceImpl;
+import fr.esgi.grp9.uparserbackend.code.service.catalog.CatalogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +16,9 @@ import java.util.Optional;
 @RequestMapping("/catalog")
 public class CatalogController {
 
-    private final CatalogServiceImpl catalogService;
+    private final CatalogService catalogService;
 
-    public CatalogController(CatalogServiceImpl catalogService) {
+    public CatalogController(CatalogService catalogService) {
         this.catalogService = catalogService;
     }
 

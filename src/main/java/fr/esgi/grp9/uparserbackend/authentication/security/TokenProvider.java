@@ -1,7 +1,7 @@
 package fr.esgi.grp9.uparserbackend.authentication.security;
 
 import fr.esgi.grp9.uparserbackend.user.domain.User;
-import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
+import fr.esgi.grp9.uparserbackend.user.service.UserService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class TokenProvider {
     private long tokenValidityInMilliseconds;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     public String createToken(User user) {
         Claims claims = Jwts.claims();

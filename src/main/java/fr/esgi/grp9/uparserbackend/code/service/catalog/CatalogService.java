@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.code.domain.catalog;
+package fr.esgi.grp9.uparserbackend.code.service.catalog;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CatalogServiceImpl implements CatalogService {
+public class CatalogService implements ICatalogService {
     private final CodeRepository codeRepository;
 
-    public CatalogServiceImpl(CodeRepository codeRepository) {
+    public CatalogService(CodeRepository codeRepository) {
         this.codeRepository = codeRepository;
     }
 

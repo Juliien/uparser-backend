@@ -1,23 +1,24 @@
 package fr.esgi.grp9.uparserbackend.run.web;
 
-import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
+
 import fr.esgi.grp9.uparserbackend.run.domain.Run;
-import fr.esgi.grp9.uparserbackend.run.domain.RunService;
-import fr.esgi.grp9.uparserbackend.user.domain.UserService;
+import fr.esgi.grp9.uparserbackend.run.service.IRunService;
+import fr.esgi.grp9.uparserbackend.user.service.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/runs")
 public class RunController {
-    private final RunService runService;
-    private final UserService userService;
+    private final IRunService runService;
+    private final IUserService userService;
 
-    public RunController(RunService runService, UserService userService) {
+    public RunController(IRunService runService, IUserService userService) {
         this.runService = runService;
         this.userService = userService;
     }
@@ -29,11 +30,18 @@ public class RunController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Run> getRunById(@PathVariable String id){
+        if (id == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty id.");
+        }
         try {
-            return new ResponseEntity<>(runService.findRunById(id), HttpStatus.OK);
-        } catch (NotFoundWithIdException notFoundWithIdException){
-            System.out.println(notFoundWithIdException.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            Optional<Run> _run = runService.findRunById(id);
+            if (_run.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This run doesn't exist.");
+            }
+            return new ResponseEntity<>(_run.get(), HttpStatus.OK);
+        } catch (Exception exception){
+            exception.printStackTrace();
+            throw  new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
 
@@ -47,29 +55,22 @@ public class RunController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<Run> updateRun(@RequestBody final Run run){
-        try {
-            runService.findRunById(run.getId());
-            return new ResponseEntity<>(runService.updateRun(run), HttpStatus.OK);
-        } catch (Exception exception) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRun(@PathVariable String id) {
-        Run _runExist = runService.findRunById(id);
-
-        if (_runExist != null) {
-            try {
-                runService.deleteRunById(id);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } catch (Exception exception) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        if (id == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty id.");
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            Optional<Run> _run = runService.findRunById(id);
+            if (_run.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This run doesn't exist.");
+            }
+            runService.deleteRunById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
     }
 
 }

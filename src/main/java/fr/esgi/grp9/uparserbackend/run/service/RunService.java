@@ -1,18 +1,20 @@
-package fr.esgi.grp9.uparserbackend.run.domain;
+package fr.esgi.grp9.uparserbackend.run.service;
 
-import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
+import fr.esgi.grp9.uparserbackend.run.domain.Run;
+import fr.esgi.grp9.uparserbackend.run.domain.RunRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class RunServiceImpl implements RunService{
+public class RunService implements IRunService {
     private final RunRepository runRepository;
 
     @Autowired
-    public RunServiceImpl(RunRepository runRepository) {
+    public RunService(RunRepository runRepository) {
         this.runRepository = runRepository;
     }
 
@@ -32,14 +34,8 @@ public class RunServiceImpl implements RunService{
     }
 
     @Override
-    public Run updateRun(Run run) {
-        Run _run = runRepository.findById(run.getId()).orElseThrow(() -> new NotFoundWithIdException("Run", run.getId()));
-        return runRepository.save(_run);
-    }
-
-    @Override
-    public Run findRunById(String id) {
-        return runRepository.findById(id).orElseThrow(() -> new NotFoundWithIdException("Run", id));
+    public Optional<Run> findRunById(String id) {
+        return runRepository.findById(id);
     }
 
     @Override

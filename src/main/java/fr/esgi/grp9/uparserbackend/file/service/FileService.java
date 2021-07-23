@@ -1,18 +1,20 @@
-package fr.esgi.grp9.uparserbackend.file.domain;
+package fr.esgi.grp9.uparserbackend.file.service;
 
-import fr.esgi.grp9.uparserbackend.exception.common.NotFoundWithIdException;
+import fr.esgi.grp9.uparserbackend.file.domain.File;
+import fr.esgi.grp9.uparserbackend.file.domain.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class FileServiceImpl implements FileService {
+public class FileService implements IFileService {
     private final FileRepository fileRepository;
 
     @Autowired
-    public FileServiceImpl(FileRepository fileRepository) {
+    public FileService(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
     }
 
@@ -35,8 +37,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File findFileById(String id) {
-        return fileRepository.findById(id).orElseThrow(() -> new NotFoundWithIdException("File", id));
+    public Optional<File> findFileById(String id) {
+        return fileRepository.findById(id);
     }
 
     @Override
