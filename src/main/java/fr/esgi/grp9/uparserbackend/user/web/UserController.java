@@ -1,34 +1,63 @@
 package fr.esgi.grp9.uparserbackend.user.web;
 
 import fr.esgi.grp9.uparserbackend.user.domain.User;
-import fr.esgi.grp9.uparserbackend.user.domain.UserServiceImpl;
+import fr.esgi.grp9.uparserbackend.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<User> getUserByEmail(@RequestBody final User user) {
-        return new ResponseEntity<>(this.userService.findUserByEmail(user.getEmail()), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        if (email == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty email.");
+        }
+        try {
+            Optional<User> _user = this.userService.findUserByEmail(email);
+            if (_user.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user doesn't exist.");
+            }
+            return new ResponseEntity<>(_user.get(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> getUsers() {
-        return new ResponseEntity<>(this.userService.getUsers(), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(this.userService.getUsers(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<User> updateUserPassword(@RequestBody User user) {
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incomplete user.");
+        }
+        try {
+            return new ResponseEntity<>(this.userService.updateUserPassword(user), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }

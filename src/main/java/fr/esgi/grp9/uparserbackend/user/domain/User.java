@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,7 +16,6 @@ import java.util.Set;
 @Builder
 @Document(collection = "users")
 public class User {
-
     @Id
     private String id;
     @Field(value = "firstname")
@@ -28,7 +26,7 @@ public class User {
     private String email;
     private String password;
     @Field(value = "create_date")
-    private LocalDate createDate;
+    private Date createDate;
     @Field(value = "close_date")
     private Date closeDate;
     @Field(value = "last_login_date")
