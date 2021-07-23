@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 import java.util.List;
 import java.util.Optional;
 
-public interface IRunService {
+public interface    IRunService {
     Run createRun(Run run);
     Optional<Run> findRunById(String id);
     List<Run> getRuns();
