@@ -41,6 +41,7 @@ public class QualityService implements IQualityService {
     }
 
     private String prepareCode(String code) {
+        //modify variable and function and argument
         return code.replaceAll("\\s+","");
     }
 

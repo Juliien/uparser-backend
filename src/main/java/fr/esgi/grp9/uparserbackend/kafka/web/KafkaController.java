@@ -22,18 +22,13 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("/kafka")
 public class KafkaController {
     private final KafkaService uParserProducerService;
-    private final CodeService codeService;
-    private final RunService runService;
 
-
-    public KafkaController(KafkaService uParserProducerService, CodeService codeService, RunService runService) {
+    public KafkaController(KafkaService uParserProducerService) {
         this.uParserProducerService = uParserProducerService;
-        this.codeService = codeService;
-        this.runService = runService;
     }
 
     @PostMapping("/produce/{id}")
-    public ResponseEntity<Run> produce(@RequestBody final KafkaTransaction kafkaTransaction, @PathVariable String id) {
+    public ResponseEntity<RunRaw> produce(@RequestBody final KafkaTransaction kafkaTransaction, @PathVariable String id) {
         String transactionId = UUID.randomUUID().toString();
         kafkaTransaction.setId(transactionId);
         ParserMetaData parserMetaData;
@@ -48,31 +43,7 @@ public class KafkaController {
         if (parserMetaData != null) {
             try {
                 RunRaw runnerOutput = uParserProducerService.seekForRunnerResults(kafkaTransaction.getId());
-                Run runResult = Run.builder()
-                        .id(runnerOutput.getRun_id())
-                        .userId(id)
-                        .codeId(null)
-                        .stdout(runnerOutput.getStdout())
-                        .stderr(runnerOutput.getStderr())
-                        .artifact(runnerOutput.getArtifact())
-                        .stats(null)
-                        .creationDate(LocalDateTime.now())
-                        .build();
-
-                if(!id.equals("1") && runnerOutput.getStderr().isEmpty()) {
-                    Code code = Code.builder()
-                            .codeEncoded(kafkaTransaction.getAlgorithm())
-                            .extensionStart(kafkaTransaction.getFrom())
-                            .extensionEnd(kafkaTransaction.getTo())
-                            .language(kafkaTransaction.getLanguage())
-                            .date(new Date())
-                            .build();
-
-                    Code newCode = this.codeService.addCode(code);
-                    runResult.setCodeId(newCode.getId());
-                    this.runService.createRun(runResult);
-                }
-                return new ResponseEntity<>(runResult, HttpStatus.OK);
+                return new ResponseEntity<>(runnerOutput, HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -143,5 +143,4 @@ public class KafkaService implements IKafkaService {
         }
         return props;
     }
-
 }
