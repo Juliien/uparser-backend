@@ -4,8 +4,11 @@ import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class QualityService implements IQualityService {
@@ -16,26 +19,40 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public Code testCode(Code code) {
-        //TODO don't save code
-        // check copy code
-        Code _code = this.checkCodeExist(code);
-        if(_code != null && code.getUserId().equals(_code.getUserId())) {
-            return null;
+    public Code isCodePlagiarism(Code code) throws NoSuchAlgorithmException {
+        // decode base64
+        String decodeCode = this.decodeCode(code.getCodeEncoded());
+        // trim code
+        String codeTrim = this.prepareCode(decodeCode);
+        // hash code
+        String hash = this.createMD5Hash(codeTrim);
+
+        Optional<Code> codeExist = this.checkIfCodeExist(hash);
+        if(codeExist.isPresent()) {
+            code.setPlagiarism(true);
         }
-        String userCode = this.decodeCode(code);
-//        this.parseCode(userCode);
-        code.setDate(new Date());
-        return this.codeQualityRepository.save(code);
+        code.setHash(hash);
+        return code;
     }
 
-    private Code checkCodeExist(Code code) {
-        return this.codeQualityRepository.findByCodeEncoded(code.getCodeEncoded());
-    }
-
-    private String decodeCode(Code code) {
-        byte[] decodedBytes = Base64.getDecoder().decode(code.getCodeEncoded());
+    private String decodeCode(String code) {
+        byte[] decodedBytes = Base64.getDecoder().decode(code);
         return new String(decodedBytes);
+    }
+
+    private String prepareCode(String code) {
+        return code.replaceAll("\\s+","");
+    }
+
+    private String createMD5Hash(String s) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(s.getBytes());
+        byte[] digest = md.digest();
+        return DatatypeConverter.printHexBinary(digest).toUpperCase();
+    }
+
+    private Optional<Code> checkIfCodeExist(String hash) {
+        return this.codeQualityRepository.findByHash(hash);
     }
 
     private void parseCode(String code) {

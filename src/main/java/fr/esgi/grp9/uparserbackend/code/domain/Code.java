@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
@@ -13,12 +14,17 @@ import java.util.Date;
 public class Code {
     @Id
     private String id;
+    @Field(value = "user_id")
     private String userId;
+    @Field(value = "code_encoded")
     private String codeEncoded;
+    private String hash;
+    @Field(value = "extension_start")
     private String extensionStart;
+    @Field(value = "extension_end")
     private String extensionEnd;
     private String language;
-    private Date date;
     private boolean isPlagiarism;
     private boolean isEnable;
+    private Date date;
 }
