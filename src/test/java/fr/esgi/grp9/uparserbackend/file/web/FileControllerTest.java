@@ -11,13 +11,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class FileControllerTest {
 
     @InjectMocks

@@ -15,7 +15,6 @@ import java.util.Date;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
 public class FileServiceImplTest {
 
     @InjectMocks

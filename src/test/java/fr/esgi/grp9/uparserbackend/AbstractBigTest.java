@@ -21,7 +21,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
 @ActiveProfiles("integration")
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = DEFINED_PORT, properties = "server.port=8999")
 public abstract class AbstractBigTest {
 
