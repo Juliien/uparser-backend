@@ -32,8 +32,8 @@ public class QualityService implements IQualityService {
         // hash code
         String hash = this.createMD5Hash(codeTrim);
 
-        Optional<Code> codeExist = this.checkIfCodeExist(hash);
-        if(codeExist.isPresent()) {
+        List<Code> codeExist = this.checkIfCodeExist(hash);
+        if(codeExist.size() > 0) {
             code.setPlagiarism(true);
         }
         code.setHash(hash);
@@ -57,8 +57,8 @@ public class QualityService implements IQualityService {
         return DatatypeConverter.printHexBinary(digest).toUpperCase();
     }
 
-    private Optional<Code> checkIfCodeExist(String hash) {
-        return this.codeQualityRepository.findByHash(hash);
+    private List<Code> checkIfCodeExist(String hash) {
+        return this.codeQualityRepository.findAllByHash(hash);
     }
 
     private void parseCode(String code) {
