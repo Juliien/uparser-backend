@@ -24,6 +24,8 @@ public class Code {
     @Field(value = "extension_end")
     private String extensionEnd;
     private String language;
+    @Field(value = "code_mark")
+    private int codeMark;
     private boolean isPlagiarism;
     private boolean isEnable;
     private Date date;
