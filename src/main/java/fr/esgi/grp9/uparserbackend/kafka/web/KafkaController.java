@@ -23,18 +23,13 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("/kafka")
 public class KafkaController {
     private final KafkaService uParserProducerService;
-    private final CodeService codeService;
-    private final RunService runService;
 
-
-    public KafkaController(KafkaService uParserProducerService, CodeService codeService, RunService runService) {
+    public KafkaController(KafkaService uParserProducerService) {
         this.uParserProducerService = uParserProducerService;
-        this.codeService = codeService;
-        this.runService = runService;
     }
 
     @PostMapping("/produce/{id}")
-    public ResponseEntity<Run> produce(@RequestBody final KafkaTransaction kafkaTransaction, @PathVariable String id) {
+    public ResponseEntity<RunRaw> produce(@RequestBody final KafkaTransaction kafkaTransaction, @PathVariable String id) {
         String transactionId = UUID.randomUUID().toString();
         kafkaTransaction.setId(transactionId);
         RunRaw runnerOutput;

@@ -5,7 +5,7 @@ import fr.esgi.grp9.uparserbackend.run.domain.Run;
 import java.util.List;
 import java.util.Optional;
 
-public interface IRunService {
+public interface    IRunService {
     Run createRun(Run run);
     Optional<Run> findRunById(String id);
     List<Run> getRuns();

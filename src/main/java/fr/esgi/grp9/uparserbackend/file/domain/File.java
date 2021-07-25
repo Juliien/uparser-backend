@@ -28,4 +28,4 @@ public class File {
     private String fileExtension;
     @Field(value = "create_date")
     private LocalDateTime createDate;
-}
+    private Date createDate;

@@ -95,5 +95,4 @@ public class KafkaService implements IKafkaService {
         }
         return appProps;
     }
-
 }

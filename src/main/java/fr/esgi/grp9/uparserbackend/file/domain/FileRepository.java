@@ -10,4 +10,3 @@ import java.util.Optional;
 public interface FileRepository extends MongoRepository<File, String>{
     Optional<File> findById(String id);
     Optional<List<File>> findAllByUserId(String userId);
-}
