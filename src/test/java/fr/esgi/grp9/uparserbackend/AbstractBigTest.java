@@ -5,22 +5,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.RestAssured;
 import fr.esgi.grp9.uparserbackend.authentication.login.LoginDTO;
 import fr.esgi.grp9.uparserbackend.authentication.login.LoginResponseDTO;
+import fr.esgi.grp9.uparserbackend.authentication.web.AuthenticationController;
 import fr.esgi.grp9.uparserbackend.user.domain.User;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.http.ContentType.JSON;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
 @ActiveProfiles("integration")
+@RunWith(SpringRunner.class)
+@TestPropertySource(locations="classpath:test.properties")
 @SpringBootTest(webEnvironment = DEFINED_PORT, properties = "server.port=8999")
 public abstract class AbstractBigTest {
+
+    @Autowired
+    AuthenticationController authenticationController;
 
     private static final Logger LOGGER = getLogger(AbstractBigTest.class);
 
@@ -64,17 +71,9 @@ public abstract class AbstractBigTest {
 //                .post("/api/v1/auth/register");
 //    }
 
-
-
     public String tokenProvider() {
-        return given()
-                .contentType(JSON)
-                .body(toJson(this.loginDTO))
-                .when()
-                .post("/api/v1/auth/login")
-                .then()
-                .extract()
-                .as(LoginResponseDTO.class)
-                .getToken();
+        ResponseEntity<LoginResponseDTO> responseEntity = this.authenticationController.login(this.loginDTO);
+        return responseEntity.getBody().getToken();
     }
 }
+

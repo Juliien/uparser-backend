@@ -3,13 +3,11 @@ package fr.esgi.grp9.uparserbackend.kafka.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
-import fr.esgi.grp9.uparserbackend.kafka.domain.ParserMetaData;
 import fr.esgi.grp9.uparserbackend.run.domain.RunRaw;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
@@ -19,6 +17,8 @@ import org.apache.kafka.common.errors.ProducerFencedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -36,33 +36,9 @@ public class KafkaService implements IKafkaService {
     @Value("${kafka.cluster.topic.consume.name}")
     private String topicNameConsume;
 
-    @Value("${kafka.cluster.address}")
-    private String brokerAddress;
-
-    @Value("${kafka.cluster.port}")
-    private String brokerPort;
-
     @Override
-    public Producer<String, KafkaTransaction> createKafkaProducer(String groupId) {
-        Properties props = propertiesProvider("produce", groupId);
-        return  new KafkaProducer<String, KafkaTransaction>(props);
-    }
-
-    @Override
-    public ProducerRecord<String, KafkaTransaction> createProducerRecord(KafkaTransaction kafkaTransaction) {
-        return new ProducerRecord<String, KafkaTransaction>(this.topicNameProduce, kafkaTransaction.getId(), kafkaTransaction);
-    }
-
-    @Override
-    public KafkaConsumer<String, String> createKafkaConsumer(String groupId) {
-        Properties properties = propertiesProvider("consume", groupId);
-        return  new KafkaConsumer<String, String>(properties);
-    }
-
-    public ParserMetaData sendProducerRecord(KafkaTransaction kafkaTransaction) throws ExecutionException, InterruptedException, TimeoutException {
-        RecordMetadata result = null;
-
-        Properties props = propertiesProvider("produce", kafkaTransaction.getId());
+    public void sendProducerRecord(KafkaTransaction kafkaTransaction) throws ExecutionException, InterruptedException, TimeoutException {
+        Properties props = propertiesProvider();
         KafkaProducer<String, KafkaTransaction> kafkaProducer = new KafkaProducer<String, KafkaTransaction>(props);
 
         ProducerRecord<String, KafkaTransaction> producerRecord = new ProducerRecord<String, KafkaTransaction>(
@@ -70,33 +46,21 @@ public class KafkaService implements IKafkaService {
 
         Future<RecordMetadata> futureResult = kafkaProducer.send(producerRecord);
         try{
-            result = futureResult.get(5000, TimeUnit.MILLISECONDS);
+            futureResult.get(5000, TimeUnit.MILLISECONDS);
         } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
-            // We can't recover from these exceptions, so our only option is to close the producer and exit.
-            System.out.println("1 " + e.getMessage());
         } catch (KafkaException e) {
-            System.out.println("2 " + e.getMessage());
-            // For all other exceptions, just abort the transaction and try again.
             kafkaProducer.abortTransaction();
         } finally {
             kafkaProducer.close();
         }
-
-        return ParserMetaData.builder()
-                .topic(result.topic())
-                .partition(result.partition())
-                .baseOffset(result.offset())
-                .timestamp(result.timestamp())
-                .serializedKeySize(result.serializedKeySize())
-                .serializedValueSize(result.serializedValueSize())
-                .build();
     }
 
     @Override
     public RunRaw seekForRunnerResults(String soughtRunId) throws JsonProcessingException {
-        KafkaConsumer<String, String> consumer = createKafkaConsumer(soughtRunId);
+        Properties props = propertiesProvider();
+        props.setProperty("group.id", "group_" + soughtRunId);
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
         consumer.subscribe(Collections.singletonList(topicNameConsume));
-
         boolean keep = true;
         RunRaw run = null;
 
@@ -120,27 +84,16 @@ public class KafkaService implements IKafkaService {
     }
 
     @Override
-    public Properties propertiesProvider(String action, String groupId) {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", brokerAddress + ":" + brokerPort);
-
-        switch (action){
-            case "consume":
-                props.put("request.timeout.ms", 5000);
-                props.put("group.id", "groupForRunId = " + groupId);
-                props.put("enable.auto.commit", "false");
-                props.put("key.deserializer",
-                        "org.apache.kafka.common.serialization.StringDeserializer");
-                props.put("value.deserializer",
-                        "org.apache.kafka.common.serialization.StringDeserializer");
-                break;
-            case "produce":
-                props.put("max.block.ms", 3000);
-                props.put("key.serializer",
-                        "org.apache.kafka.common.serialization.StringSerializer");
-                props.put("value.serializer",
-                        "fr.esgi.grp9.uparserbackend.kafka.domain.serde.TransactionSerializer");
+    public Properties propertiesProvider() {
+        Properties appProps = new Properties();
+        try {
+            String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+            String appConfigPath = rootPath + "application-dev.properties";
+            appProps.load(new FileInputStream(appConfigPath));
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
-        return props;
+        return appProps;
     }
+
 }

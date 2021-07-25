@@ -8,8 +8,8 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(locations="classpath:test.properties")
 class UparserBackendApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+//    @Test
+//    void contextLoads() {
+//    }
 
 }
