@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.file.web;
+package fr.esgi.grp9.uparserbackend.file.domain;
 
 import fr.esgi.grp9.uparserbackend.file.domain.File;
 import fr.esgi.grp9.uparserbackend.file.domain.FileRepository;
@@ -8,12 +8,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class FileServiceImplTest {
 
     @InjectMocks
@@ -24,6 +25,7 @@ public class FileServiceImplTest {
     private File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
+            .userId("anId")
             .createDate(new Date())
             .build();
 

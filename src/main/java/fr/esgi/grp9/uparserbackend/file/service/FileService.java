@@ -2,38 +2,29 @@ package fr.esgi.grp9.uparserbackend.file.service;
 
 import fr.esgi.grp9.uparserbackend.file.domain.File;
 import fr.esgi.grp9.uparserbackend.file.domain.FileRepository;
+import fr.esgi.grp9.uparserbackend.user.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class FileService implements IFileService {
     private final FileRepository fileRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public FileService(FileRepository fileRepository) {
+    public FileService(FileRepository fileRepository, UserRepository userRepository) {
         this.fileRepository = fileRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public File createFile(File file) {
-        try {
-            return fileRepository.save(
-                    File.builder()
-                            .userId(file.getUserId())
-                            .fileName(file.getFileName())
-                            .fileContent(file.getFileContent())
-                            .fileExtension(file.getFileExtension())
-                            .createDate(new Date())
-                            .build()
-            );
-        } catch (Exception valueInstantiationException){
-            valueInstantiationException.getMessage();
-        }
-        return file;
+        file.setCreateDate(LocalDateTime.now());
+        return fileRepository.save(file);
     }
 
     @Override
@@ -47,7 +38,11 @@ public class FileService implements IFileService {
     }
 
     @Override
-    public List<File> getFilesByUserId(String userId) {
+    public Optional<List<File>> getFilesByUserId(String userId) {
+        Optional<List<File>> _files = Optional.empty();
+        if (this.userRepository.findById(userId).isEmpty()){
+            return _files;
+        }
         return this.fileRepository.findAllByUserId(userId);
     }
 
