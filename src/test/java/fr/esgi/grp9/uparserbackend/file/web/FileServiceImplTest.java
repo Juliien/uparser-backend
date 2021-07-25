@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.file.domain;
+package fr.esgi.grp9.uparserbackend.file.web;
 
 import fr.esgi.grp9.uparserbackend.file.domain.File;
 import fr.esgi.grp9.uparserbackend.file.domain.FileRepository;
@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -16,7 +15,7 @@ import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class FileServiceImplTest {
 
     @InjectMocks
@@ -27,8 +26,12 @@ public class FileServiceImplTest {
     private File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
+<<<<<<< HEAD:src/test/java/fr/esgi/grp9/uparserbackend/file/domain/FileServiceImplTest.java
             .userId("anId")
             .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
+=======
+            .createDate(new Date())
+>>>>>>> f99e331661596ef02185434ce6bf67f6739a8e78:src/test/java/fr/esgi/grp9/uparserbackend/file/web/FileServiceImplTest.java
             .build();
 
     @Test

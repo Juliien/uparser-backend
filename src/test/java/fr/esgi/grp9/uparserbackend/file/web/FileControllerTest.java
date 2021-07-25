@@ -8,11 +8,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
+=======
+>>>>>>> f99e331661596ef02185434ce6bf67f6739a8e78
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -23,7 +25,10 @@ import java.util.Date;
 import static org.mockito.Mockito.verify;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
+<<<<<<< HEAD
 @SpringBootTest
+=======
+>>>>>>> f99e331661596ef02185434ce6bf67f6739a8e78
 @RunWith(MockitoJUnitRunner.class)
 public class FileControllerTest {
 
@@ -35,8 +40,12 @@ public class FileControllerTest {
     private final File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
+<<<<<<< HEAD
             .userId("anId")
             .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
+=======
+            .createDate(new Date())
+>>>>>>> f99e331661596ef02185434ce6bf67f6739a8e78
             .build();
 
     @Test
@@ -50,5 +59,12 @@ public class FileControllerTest {
         String id = "anId";
         fileController.getFileById(id);
         verify(fileService).findFileById(id);
+    }
+
+    @Test
+    public void should_create_new_file() {
+        ResponseEntity<File> responseEntity = fileController.createFile(this.file);
+        verify(fileService).createFile(this.file);
+        Assert.assertEquals(new ResponseEntity<>(this.file, HttpStatus.CREATED), responseEntity);
     }
 }
