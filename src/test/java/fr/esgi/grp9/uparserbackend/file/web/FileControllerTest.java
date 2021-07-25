@@ -12,12 +12,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Date;
 
 import static org.mockito.Mockito.verify;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
-@RunWith(SpringRunner.class)
+@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class FileControllerTest {
 
     @InjectMocks
@@ -29,7 +36,7 @@ public class FileControllerTest {
             .fileName("nameTest")
             .fileContent("a/path")
             .userId("anId")
-            .createDate(new Date())
+            .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
             .build();
 
     @Test
@@ -38,8 +45,8 @@ public class FileControllerTest {
         verify(fileService).getFiles();
     }
 
-    @Test
-    public void should_find_by_id_new_file() {
+    @Test(expected = ResponseStatusException.class)
+    public void should_throw_404_when_find_by_id_new_file() {
         String id = "anId";
         fileController.getFileById(id);
         verify(fileService).findFileById(id);

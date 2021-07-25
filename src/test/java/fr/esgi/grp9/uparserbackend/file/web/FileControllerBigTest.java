@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Date;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -25,13 +26,13 @@ public class FileControllerBigTest extends AbstractBigTest {
     private final File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
-            .createDate(new Date())
+            .userId("anId")
+            .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
             .build();
 
     @Before
     public void init() {
         this.token = tokenProvider();
-
         this.currentFileId = given()
                 .headers(
                         "Authorization",
@@ -114,45 +115,6 @@ public class FileControllerBigTest extends AbstractBigTest {
                 .extract()
                 .as(File.class);
         Assert.assertEquals(this.file, fetchedFile);
-    }
-
-    @Test
-    public void should_update_file() {
-        File updateFile = File.builder()
-                .id(this.currentFileId)
-                .fileName("nameTestUpdated")
-                .fileContent("a/path/updated")
-                .createDate(new Date())
-                .build();
-
-        given()
-                .headers(
-                        "Authorization",
-                        "Bearer " + this.token,
-                        "Content-Type",
-                        ContentType.JSON,
-                        "Accept",
-                        ContentType.JSON
-                )
-                .contentType(JSON)
-                .body(toJson(updateFile))
-                .when()
-                .put("/api/v1/files")
-                .then()
-                .log().all()
-                .statusCode(OK.value());
-
-        File fetchedFile = given()
-                .headers(
-                        "Authorization",
-                        "Bearer " + this.token
-                )
-                .when()
-                .get("/api/v1/files/" + this.currentFileId)
-                .then()
-                .extract()
-                .as(File.class);
-        Assert.assertEquals(updateFile, fetchedFile);
     }
 
     @Test
