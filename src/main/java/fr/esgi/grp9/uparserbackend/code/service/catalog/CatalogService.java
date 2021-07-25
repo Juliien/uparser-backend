@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CatalogService implements ICatalogService {
@@ -17,7 +18,10 @@ public class CatalogService implements ICatalogService {
 
     @Override
     public List<Code> getCatalog() {
-        return this.codeRepository.findAll();
+        return this.codeRepository.findAll()
+                .stream()
+                .filter(Code::isEnable)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -5,6 +5,7 @@ import fr.esgi.grp9.uparserbackend.code.domain.CodeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -37,7 +38,12 @@ public class CodeController {
             return new ResponseEntity<>( this.codeService.addCode(code), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<Code> enableCodeToCatalog(@RequestBody Code code) {
+        return new ResponseEntity<>(this.codeService.enableCodeToCatalog(code), HttpStatus.OK);
     }
 }
