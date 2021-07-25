@@ -8,16 +8,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FileControllerTest {
 
     @InjectMocks
@@ -28,7 +26,6 @@ public class FileControllerTest {
     private final File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
-            .userId("anId")
             .createDate(new Date())
             .build();
 
@@ -43,5 +40,12 @@ public class FileControllerTest {
         String id = "anId";
         fileController.getFileById(id);
         verify(fileService).findFileById(id);
+    }
+
+    @Test
+    public void should_create_new_file() {
+        ResponseEntity<File> responseEntity = fileController.createFile(this.file);
+        verify(fileService).createFile(this.file);
+        Assert.assertEquals(new ResponseEntity<>(this.file, HttpStatus.CREATED), responseEntity);
     }
 }
