@@ -84,6 +84,8 @@ public class QualityService implements IQualityService {
 
     @Override
     public Code testCodeQuality(Code code) {
+        String decode = decodeString(code.getCodeEncoded());
+
         code.setCodeMark(10);
         return code;
     }
