@@ -26,7 +26,20 @@ public class FileController {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<List<File>> getFilesByUserId(@PathVariable String id) {
-        return new ResponseEntity<>(this.fileService.getFilesByUserId(id), HttpStatus.OK);
+        if (id == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty id.");
+        }
+        Optional<List<File>> _files;
+        try {
+            _files = this.fileService.getFilesByUserId(id);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        if (_files.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user doesn't exist.");
+        }
+        return new ResponseEntity<>(_files.get(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -34,46 +47,38 @@ public class FileController {
         if (id == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty id.");
         }
+        Optional<File> _file;
         try {
-            Optional<File> _file = fileService.findFileById(id);
-            if (_file.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This file doesn't exist.");
-            }
+            _file = this.fileService.findFileById(id);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        if (_file.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This file doesn't exist.");
+        }
+        return new ResponseEntity<>(_file.get(), HttpStatus.OK);
+    }
 
-            return new ResponseEntity<>(_file.get(), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<File> createFile(@RequestBody final File file) {
+        try {
+            return new ResponseEntity<>(this.fileService.createFile(file), HttpStatus.CREATED);
         } catch (Exception e){
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    @PostMapping
-    public ResponseEntity<File> createFile(@RequestBody final File file) {
-
-        try {
-            File _file = fileService.createFile(file);
-            return new ResponseEntity<>(_file, HttpStatus.CREATED);
-        } catch (Exception exception){
-            exception.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable String id) {
-        if (id == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty id.");
-        }
-        Optional<File> _file = fileService.findFileById(id);
-        if (_file.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This file doesn't exist.");
-        }
+        getFileById(id);
         try {
-            fileService.deleteFileById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            this.fileService.deleteFileById(id);
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
