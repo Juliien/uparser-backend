@@ -1,5 +1,6 @@
 package fr.esgi.grp9.uparserbackend.user.web;
 
+import fr.esgi.grp9.uparserbackend.file.domain.File;
 import fr.esgi.grp9.uparserbackend.user.domain.User;
 import fr.esgi.grp9.uparserbackend.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -25,18 +26,36 @@ public class UserController {
         if (email == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty email.");
         }
+        Optional<User> _user;
         try {
-            Optional<User> _user = this.userService.findUserByEmail(email);
-            if (_user.isEmpty()){
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user doesn't exist.");
-            }
-            return new ResponseEntity<>(_user.get(), HttpStatus.OK);
-
+            _user = this.userService.findUserByEmail(email);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+        if (_user.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user doesn't exist.");
+        }
+        return new ResponseEntity<>(_user.get(), HttpStatus.OK);
     }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<User> getUserById(@PathVariable String id){
+//        if (id == null){
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty id.");
+//        }
+//        Optional<User> _user;
+//        try {
+//            _user = userService.findUserById(id);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+//        }
+//        if (_user.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user doesn't exist.");
+//        }
+//        return new ResponseEntity<>(_user.get(), HttpStatus.OK);
+//    }
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> getUsers() {

@@ -4,7 +4,6 @@ import fr.esgi.grp9.uparserbackend.authentication.login.Role;
 import fr.esgi.grp9.uparserbackend.authentication.login.RoleRepository;
 import fr.esgi.grp9.uparserbackend.user.domain.User;
 import fr.esgi.grp9.uparserbackend.user.domain.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -84,6 +82,11 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
+    public Optional<User> findUserById(String id) {
+        return this.userRepository.findById(id);
+    }
+
+    @Override
     public User updateUserPassword(User user) throws Exception {
         Optional<User> _currentUser =  userRepository.findByEmail(user.getEmail());
         if (_currentUser.isEmpty()) {
@@ -109,6 +112,11 @@ public class UserService implements IUserService, UserDetailsService {
             e.printStackTrace();
         }
         return code;
+    }
+
+    @Override
+    public void deleteUserById(String id) {
+        userRepository.deleteById(id);
     }
 
     private String getStringRandom() {

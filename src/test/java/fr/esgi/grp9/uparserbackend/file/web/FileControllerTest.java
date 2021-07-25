@@ -8,13 +8,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.mockito.Mockito.verify;
 
+@SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class FileControllerTest {
 
@@ -26,7 +30,8 @@ public class FileControllerTest {
     private final File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
-            .createDate(new Date())
+            .userId("anId")
+            .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
             .build();
 
     @Test
@@ -35,8 +40,8 @@ public class FileControllerTest {
         verify(fileService).getFiles();
     }
 
-    @Test
-    public void should_find_by_id_new_file() {
+    @Test(expected = ResponseStatusException.class)
+    public void should_throw_404_when_find_by_id_new_file() {
         String id = "anId";
         fileController.getFileById(id);
         verify(fileService).findFileById(id);
