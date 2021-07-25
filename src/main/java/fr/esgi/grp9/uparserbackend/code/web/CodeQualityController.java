@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/quality")
 public class CodeQualityController {
@@ -41,4 +43,20 @@ public class CodeQualityController {
            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    @GetMapping("/test/prepare")
+    public ResponseEntity<String> getpreparedCode(){
+        try {
+            return new ResponseEntity<>(this.codeQualityService.prepareCode("def compteur_complet(start, stop, step):\n" +
+                    "    i = start\n" +
+                    "    if a < 12 \n" +
+                   // "    while i < stop:\n" +
+                 //   "         print(\"Ce perroquet ne pourra pas\", action)\n" +
+                    "        i = i + step"), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
