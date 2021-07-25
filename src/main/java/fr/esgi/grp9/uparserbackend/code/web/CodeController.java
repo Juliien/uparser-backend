@@ -19,17 +19,17 @@ public class CodeController {
         this.codeService = codeService;
     }
 
-    @GetMapping("/history/{id}")
-    public ResponseEntity<List<Code>> getCodeHistory(@PathVariable String id) {
-        if(id != null) {
-            try {
-                return new ResponseEntity<>( this.codeService.getUserCodeHistory(id), HttpStatus.OK);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Code>> getCodesByUserId(@PathVariable String id) {
+        if(id == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        try {
+            return new ResponseEntity<>( this.codeService.getUserCodes(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @PostMapping
