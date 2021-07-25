@@ -2,7 +2,6 @@ package fr.esgi.grp9.uparserbackend.run.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -28,20 +27,16 @@ public class Run {
 
     @Id
     private String id;
-    @NonNull
     @Field(value = "user_id")
     private String userId;
     @Field(value = "code_id")
     private String codeId;
-    @NonNull
     @Field(value = "stdout")
     private String stdout;
-    @NonNull
     @Field(value = "stderr")
     private String stderr;
     @Field(value = "artifact")
     private String artifact;
-//    @NonNull
     @Field(value = "stats")
     private Hashtable<String, String> stats;
     @Field(value = "creation_date")

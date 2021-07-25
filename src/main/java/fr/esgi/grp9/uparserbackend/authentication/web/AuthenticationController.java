@@ -65,8 +65,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody final User user) {
 
-        if(user.getEmail() == null || user.getLastName() == null
-                || user.getFirstName() == null || user.getPassword() == null ) {
+        if(user.getEmail() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some fields are empty.");
         }
 
@@ -80,7 +79,7 @@ public class AuthenticationController {
             return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }
