@@ -8,20 +8,15 @@ import fr.esgi.grp9.uparserbackend.authentication.login.LoginResponseDTO;
 import fr.esgi.grp9.uparserbackend.authentication.web.AuthenticationController;
 import fr.esgi.grp9.uparserbackend.user.domain.User;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-<<<<<<< HEAD
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-=======
-
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.http.ContentType.JSON;
->>>>>>> f99e331661596ef02185434ce6bf67f6739a8e78
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 

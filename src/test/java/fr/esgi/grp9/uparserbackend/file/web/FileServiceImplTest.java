@@ -26,12 +26,8 @@ public class FileServiceImplTest {
     private File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
-<<<<<<< HEAD:src/test/java/fr/esgi/grp9/uparserbackend/file/domain/FileServiceImplTest.java
             .userId("anId")
             .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
-=======
-            .createDate(new Date())
->>>>>>> f99e331661596ef02185434ce6bf67f6739a8e78:src/test/java/fr/esgi/grp9/uparserbackend/file/web/FileServiceImplTest.java
             .build();
 
     @Test
