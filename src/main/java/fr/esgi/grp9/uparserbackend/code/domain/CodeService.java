@@ -16,7 +16,7 @@ public class CodeService {
         this.codeRepository = codeRepository;
     }
 
-    public List<Code> getUserCodeHistory(String userId) {
+    public List<Code> getUserCodes(String userId) {
         return this.codeRepository.findAllByUserId(userId);
     }
 

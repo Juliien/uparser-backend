@@ -25,9 +25,10 @@ public class QualityService implements IQualityService {
         // decode base64
         String decodeCode = this.decodeString(code.getCodeEncoded());
         // trim code
-        String codeTrim = this.prepareCode(decodeCode);
+        // decodementer
+//        String codeTrim = this.prepareCode(decodeCode);
         // hash code
-        String hash = this.createMD5Hash(codeTrim);
+        String hash = this.createMD5Hash(decodeCode);
 
         List<Code> codeExist = this.checkIfCodeExist(hash);
         if(codeExist.size() > 0) {
