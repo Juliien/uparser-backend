@@ -81,18 +81,18 @@ public class RunController {
         return new ResponseEntity<>(_runs.get(), HttpStatus.OK);
     }
 
-//    @PostMapping
-//    public ResponseEntity<Run> createRun(@RequestBody final Run run) {
-//        if (userService.findUserById(run.getUserId()).isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This run doesn't exist.");
-//        }
-//        try {
-//            return new ResponseEntity<>(runService.createRun(run), HttpStatus.CREATED);
-//        } catch (Exception exception){
-//            exception.printStackTrace();
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-//        }
-//    }
+    @PostMapping
+    public ResponseEntity<Run> createRun(@RequestBody final Run run) {
+        if (userService.findUserById(run.getUserId()).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This run doesn't exist.");
+        }
+        try {
+            return new ResponseEntity<>(runService.createRun(run), HttpStatus.CREATED);
+        } catch (Exception exception){
+            exception.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRun(@PathVariable String id) {
@@ -105,5 +105,4 @@ public class RunController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

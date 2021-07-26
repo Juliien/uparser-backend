@@ -1,7 +1,6 @@
 package fr.esgi.grp9.uparserbackend.run.service;
 
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
-import fr.esgi.grp9.uparserbackend.file.domain.FileRepository;
 import fr.esgi.grp9.uparserbackend.run.domain.Run;
 import fr.esgi.grp9.uparserbackend.run.domain.RunRepository;
 import fr.esgi.grp9.uparserbackend.user.domain.UserRepository;
@@ -33,7 +32,7 @@ public class RunService implements IRunService {
                 .codeId(run.getCodeId())
                 .stdout(run.getStdout())
                 .stderr(run.getStderr())
-                .artifact(null)
+                .artifact(run.getArtifact())
                 .stats(run.getStats())
                 .creationDate(LocalDateTime.now())
                 .build()
