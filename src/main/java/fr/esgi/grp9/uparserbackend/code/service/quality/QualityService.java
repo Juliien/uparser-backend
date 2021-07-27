@@ -43,9 +43,9 @@ public class QualityService implements IQualityService {
         return new String(decodedBytes);
     }
 
-    public String prepareCode(String code) {
+    private String prepareCode(String code) {
         //modify variable and function and argument
-        String str = code.replace("(", " ( ");
+      /*String str = code.replace("(", " ( ");
         String str2 = str.replace(")"," ) ");
         String str3 = str2.replace("="," = ");
         String str4 = str3.replace(","," ,");
@@ -83,7 +83,8 @@ public class QualityService implements IQualityService {
 
             preparedcode.add(c);
 
-        return String.valueOf(preparedcode);
+        return String.valueOf(preparedcode);*/
+        return null;
     }
 
     private String createMD5Hash(String s) throws NoSuchAlgorithmException {
