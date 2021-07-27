@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Date;
 
 import static org.mockito.Mockito.verify;
@@ -24,7 +26,8 @@ public class FileServiceImplTest {
     private File file = File.builder()
             .fileName("nameTest")
             .fileContent("a/path")
-            .createDate(new Date())
+            .userId("anId")
+            .createDate(LocalDateTime.of(2015, Month.JULY, 29, 19, 30, 40))
             .build();
 
     @Test

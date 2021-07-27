@@ -1,4 +1,4 @@
-package fr.esgi.grp9.uparserbackend.code.domain;
+package fr.esgi.grp9.uparserbackend.code.domain.history;
 
 import com.mongodb.lang.NonNull;
 import lombok.Builder;
@@ -11,24 +11,14 @@ import java.util.Date;
 
 @Data
 @Builder
-@Document(collection = "codes")
-public class Code {
+@Document(collection = "codes_histories")
+public class CodeHistory {
     @Id
     private String id;
     @Field(value = "user_id")
     private String userId;
     @Field(value = "code_encoded")
     private String codeEncoded;
-    private String hash;
-    @Field(value = "extension_start")
-    private String extensionStart;
-    @Field(value = "extension_end")
-    private String extensionEnd;
     private String language;
-    @Field(value = "code_mark")
-    private int codeMark;
-    private boolean isPlagiarism;
-    @NonNull
-    private boolean isEnable;
     private Date date;
 }

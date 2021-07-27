@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Hashtable;
+
 @Data
 @Builder
 public class RunRaw {
 
-    public RunRaw(String run_id, String stdout, String stderr, String artifact) {
+    public RunRaw(String run_id, String stdout, String stderr, String artifact, Hashtable<String, String> stats) {
         this.run_id = run_id;
         this.stdout = stdout;
         this.stderr = stderr;
         this.artifact = artifact;
+        this.stats =  stats;
     }
 
     public RunRaw() {}
@@ -25,4 +28,6 @@ public class RunRaw {
     private String stderr;
     @JsonProperty("artifact")
     private String artifact;
+    @JsonProperty("stats")
+    private Hashtable<String, String> stats;
 }

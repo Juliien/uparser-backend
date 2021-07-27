@@ -5,6 +5,7 @@ import fr.esgi.grp9.uparserbackend.code.domain.CodeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,17 +19,17 @@ public class CodeController {
         this.codeService = codeService;
     }
 
-    @GetMapping("/history/{id}")
-    public ResponseEntity<List<Code>> getCodeHistory(@PathVariable String id) {
-        if(id != null) {
-            try {
-                return new ResponseEntity<>( this.codeService.getUserCodeHistory(id), HttpStatus.OK);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Code>> getCodesByUserId(@PathVariable String id) {
+        if(id == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        try {
+            return new ResponseEntity<>( this.codeService.getUserCodes(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @PostMapping
@@ -37,7 +38,12 @@ public class CodeController {
             return new ResponseEntity<>( this.codeService.addCode(code), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<Code> enableCodeToCatalog(@RequestBody Code code) {
+        return new ResponseEntity<>(this.codeService.enableCodeToCatalog(code), HttpStatus.OK);
     }
 }
