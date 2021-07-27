@@ -1,6 +1,7 @@
 package fr.esgi.grp9.uparserbackend.code.service.keyfinder;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
+import lombok.Builder;
 
 import java.util.*;
 
@@ -15,6 +16,34 @@ public class KeyFinderService {
     private List<String> arrayOfVariables = new ArrayList<>();
     private List<String> arrayOfParams = new ArrayList<>();
     private List<String> arrayOfFunctionNames = new ArrayList<>();
+
+    public Code getCode() {
+        return code;
+    }
+
+    public String getFormattedCode() {
+        return formattedCode;
+    }
+
+    public List<String> getArrayOfSingleWords() {
+        return arrayOfSingleWords;
+    }
+
+    public List<List<String>> getArrayOfLinesOfSingleWords() {
+        return arrayOfLinesOfSingleWords;
+    }
+
+    public List<String> getArrayOfVariables() {
+        return arrayOfVariables;
+    }
+
+    public List<String> getArrayOfParams() {
+        return arrayOfParams;
+    }
+
+    public List<String> getArrayOfFunctionNames() {
+        return arrayOfFunctionNames;
+    }
 
     public KeyFinderService(Code code) throws Exception {
         this.code = code;
@@ -151,7 +180,7 @@ public class KeyFinderService {
         return string;
     }
 
-    public List<String> reformatStringsPrint(List<String> strings, String replaceWith) throws Exception {
+    private List<String> reformatStringsPrint(List<String> strings, String replaceWith) throws Exception {
         String print_data = replaceWith;
         List<String> finalList = new ArrayList<>();
         for (int i = 0; i < strings.size(); i++) {
@@ -226,6 +255,8 @@ public class KeyFinderService {
         }
         return finalLines;
     }
+    
+    //TODO faire fonction qui enlever les commentaires
 
 //    public String getArrayOfSingleWordsWithEscapeSequences(String string) {
 //        List<String> escapeSequences = Arrays.asList("\t", "\n", "\b", "\r", "\f");
@@ -235,20 +266,22 @@ public class KeyFinderService {
 //        return string;
 //    }
 
-    public static void main(String[] args) throws Exception {
-        Code code = Code.builder()
-                .language("python")
-                .extensionEnd("csv")
-                .extensionEnd("json")
-                .codeEncoded("IyBQeXRob24gcHJvZ3JhbSB0byBkaXNwbGF5IHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UKZGVmIHJlY3VyX2ZpYm8obik6CiAgICAgICAgaWYgbiA8PSAxOgogICAgICAgIHJldHVybiBuCmVsc2U6CiAgICAgICByZXR1cm4ocmVjdXJfZmlibyhuLTEpICsgcmVjdXJfZmlibyhuLTIpKQoKbnRlcm1zID0gMTAKCiMgY2hlY2sgaWYgdGhlIG51bWJlciBvZiB0ZXJtcyBpcyB2YWxpZAppZiBudGVybXMgPD0gMDoKICAgIHByaW50KCJQbGVzZSBlbnRlciBhIHBvc2l0aXZlIGludGVnZXIiKQplbHNlOgogICAgcHJpbnQoIkZpYm9uYWNjaSBzZXF1ZW5jZToiKQogICAgZm9yIGkgaW4gcmFuZ2UobnRlcm1zKToKICAgICAgICBwcmludChyZWN1cl9maWJvKGkpKQog")
-                .build();
-
-        KeyFinderService keyFinderService = new KeyFinderService(code);
-        System.out.println("keyFinderService.formattedCode = " + keyFinderService.formattedCode);
-        System.out.println("keyFinderService.arrayOfSingleWords = " + keyFinderService.arrayOfSingleWords);
-        System.out.println("keyFinderService.arrayOfLinesOfSingleWords = " + keyFinderService.arrayOfLinesOfSingleWords);
-        System.out.println("keyFinderService.arrayOfVariables = " + keyFinderService.arrayOfVariables);
-        System.out.println("keyFinderService.arrayOfParams = " + keyFinderService.arrayOfParams);
-        System.out.println("keyFinderService.arrayOfFunctionNames = " + keyFinderService.arrayOfFunctionNames);
-    }
+//    public static void main(String[] args) throws Exception {
+//        Code code = Code.builder()
+//                .language("python")
+//                .extensionEnd("csv")
+//                .extensionEnd("json")
+//                .codeEncoded("IyBQeXRob24gcHJvZ3JhbSB0byBkaXNwbGF5IHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UKCmRlZiByZWN1cl9maWJvICggbiApIDoKICAgaWYgbiA8PSAxOgogICAgICAgcmV0dXJuIG4KICAgZWxzZToKICAgICAgIHJldHVybihyZWN1cl9maWJvKG4tMSkgKyByZWN1cl9maWJvKG4tMikpCgpudGVybXMgPSAxMAoKIyBjaGVjayBpZiB0aGUgbnVtYmVyIG9mIHRlcm1zIGlzIHZhbGlkCmlmIG50ZXJtcyA8PSAwOgogICBwcmludCgiUGxlc2UgZW50ZXIgYSBwb3NpdGl2ZSBpbnRlZ2VyIikKZWxzZToKICAgcHJpbnQoIkZpYm9uYWNjaSBzZXF1ZW5jZToiKQogICBmb3IgaSBpbiByYW5nZShudGVybXMpOgogICAgICAgcHJpbnQocmVjdXJfZmlibyhpKSkK")
+//                .build();
+//
+//        KeyFinderService keyFinderService = new KeyFinderService(code);
+//
+//        System.out.println(keyFinderService.decodeCode(code.getCodeEncoded()));
+//        System.out.println("keyFinderService.formattedCode = " + keyFinderService.getFormattedCode());
+//        System.out.println("keyFinderService.arrayOfSingleWords = " + keyFinderService.getArrayOfSingleWords());
+//        System.out.println("keyFinderService.arrayOfLinesOfSingleWords = " + keyFinderService.getArrayOfLinesOfSingleWords());
+//        System.out.println("keyFinderService.arrayOfVariables = " + keyFinderService.getArrayOfVariables());
+//        System.out.println("keyFinderService.arrayOfParams = " + keyFinderService.getArrayOfParams());
+//        System.out.println("keyFinderService.arrayOfFunctionNames = " + keyFinderService.getArrayOfFunctionNames());
+//    }
 }
