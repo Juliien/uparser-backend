@@ -180,7 +180,7 @@ public class KeyFinderService {
         return string;
     }
 
-    public List<String> reformatStringsPrint(List<String> strings, String replaceWith) throws Exception {
+    private List<String> reformatStringsPrint(List<String> strings, String replaceWith) throws Exception {
         String print_data = replaceWith;
         List<String> finalList = new ArrayList<>();
         for (int i = 0; i < strings.size(); i++) {
@@ -266,22 +266,22 @@ public class KeyFinderService {
 //        return string;
 //    }
 
-    public static void main(String[] args) throws Exception {
-        Code code = Code.builder()
-                .language("python")
-                .extensionEnd("csv")
-                .extensionEnd("json")
-                .codeEncoded("IyBQeXRob24gcHJvZ3JhbSB0byBkaXNwbGF5IHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UKCmRlZiByZWN1cl9maWJvICggbiApIDoKICAgaWYgbiA8PSAxOgogICAgICAgcmV0dXJuIG4KICAgZWxzZToKICAgICAgIHJldHVybihyZWN1cl9maWJvKG4tMSkgKyByZWN1cl9maWJvKG4tMikpCgpudGVybXMgPSAxMAoKIyBjaGVjayBpZiB0aGUgbnVtYmVyIG9mIHRlcm1zIGlzIHZhbGlkCmlmIG50ZXJtcyA8PSAwOgogICBwcmludCgiUGxlc2UgZW50ZXIgYSBwb3NpdGl2ZSBpbnRlZ2VyIikKZWxzZToKICAgcHJpbnQoIkZpYm9uYWNjaSBzZXF1ZW5jZToiKQogICBmb3IgaSBpbiByYW5nZShudGVybXMpOgogICAgICAgcHJpbnQocmVjdXJfZmlibyhpKSkK")
-                .build();
-
-        KeyFinderService keyFinderService = new KeyFinderService(code);
-
-        System.out.println(keyFinderService.decodeCode(code.getCodeEncoded()));
-        System.out.println("keyFinderService.formattedCode = " + keyFinderService.getFormattedCode());
-        System.out.println("keyFinderService.arrayOfSingleWords = " + keyFinderService.getArrayOfSingleWords());
-        System.out.println("keyFinderService.arrayOfLinesOfSingleWords = " + keyFinderService.getArrayOfLinesOfSingleWords());
-        System.out.println("keyFinderService.arrayOfVariables = " + keyFinderService.getArrayOfVariables());
-        System.out.println("keyFinderService.arrayOfParams = " + keyFinderService.getArrayOfParams());
-        System.out.println("keyFinderService.arrayOfFunctionNames = " + keyFinderService.getArrayOfFunctionNames());
-    }
+//    public static void main(String[] args) throws Exception {
+//        Code code = Code.builder()
+//                .language("python")
+//                .extensionEnd("csv")
+//                .extensionEnd("json")
+//                .codeEncoded("IyBQeXRob24gcHJvZ3JhbSB0byBkaXNwbGF5IHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UKCmRlZiByZWN1cl9maWJvICggbiApIDoKICAgaWYgbiA8PSAxOgogICAgICAgcmV0dXJuIG4KICAgZWxzZToKICAgICAgIHJldHVybihyZWN1cl9maWJvKG4tMSkgKyByZWN1cl9maWJvKG4tMikpCgpudGVybXMgPSAxMAoKIyBjaGVjayBpZiB0aGUgbnVtYmVyIG9mIHRlcm1zIGlzIHZhbGlkCmlmIG50ZXJtcyA8PSAwOgogICBwcmludCgiUGxlc2UgZW50ZXIgYSBwb3NpdGl2ZSBpbnRlZ2VyIikKZWxzZToKICAgcHJpbnQoIkZpYm9uYWNjaSBzZXF1ZW5jZToiKQogICBmb3IgaSBpbiByYW5nZShudGVybXMpOgogICAgICAgcHJpbnQocmVjdXJfZmlibyhpKSkK")
+//                .build();
+//
+//        KeyFinderService keyFinderService = new KeyFinderService(code);
+//
+//        System.out.println(keyFinderService.decodeCode(code.getCodeEncoded()));
+//        System.out.println("keyFinderService.formattedCode = " + keyFinderService.getFormattedCode());
+//        System.out.println("keyFinderService.arrayOfSingleWords = " + keyFinderService.getArrayOfSingleWords());
+//        System.out.println("keyFinderService.arrayOfLinesOfSingleWords = " + keyFinderService.getArrayOfLinesOfSingleWords());
+//        System.out.println("keyFinderService.arrayOfVariables = " + keyFinderService.getArrayOfVariables());
+//        System.out.println("keyFinderService.arrayOfParams = " + keyFinderService.getArrayOfParams());
+//        System.out.println("keyFinderService.arrayOfFunctionNames = " + keyFinderService.getArrayOfFunctionNames());
+//    }
 }
