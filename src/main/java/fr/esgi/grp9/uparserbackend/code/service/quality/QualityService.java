@@ -1,5 +1,6 @@
 package fr.esgi.grp9.uparserbackend.code.service.quality;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
@@ -43,9 +44,9 @@ public class QualityService implements IQualityService {
         return new String(decodedBytes);
     }
 
-    public String prepareCode(String code) {
+    private String prepareCode(String code) {
         //modify variable and function and argument
-        String str = code.replace("(", " ( ");
+      /*String str = code.replace("(", " ( ");
         String str2 = str.replace(")"," ) ");
         String str3 = str2.replace("="," = ");
         String str4 = str3.replace(","," ,");
@@ -83,7 +84,8 @@ public class QualityService implements IQualityService {
 
             preparedcode.add(c);
 
-        return String.valueOf(preparedcode);
+        return String.valueOf(preparedcode);*/
+        return null;
     }
 
     private String createMD5Hash(String s) throws NoSuchAlgorithmException {
@@ -104,16 +106,15 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public String parseFile(KafkaTransaction kafkaTransaction) {
+    public String parseFile(KafkaTransaction kafkaTransaction) throws JsonProcessingException {
         String result = "";
-        String[] _artifact = decodeString(kafkaTransaction.getInputfile()).split("\n");
-        List<String> list = new ArrayList<>();
-        for(String i: _artifact) {
-            list.add(i);
-        }
+        String _artifact = decodeString(kafkaTransaction.getInputfile());
+
         if(kafkaTransaction.getLanguage().equals("python")) {
-            //ajouter le switch
-            result = this.pythonParser.csv_to_json(list);
+
+            if(kafkaTransaction.getFrom().equals("json") &&
+                    kafkaTransaction.getTo().equals("csv"))
+            result = this.pythonParser.json_to_csv(_artifact);
         }
         return result;
     }

@@ -55,7 +55,7 @@ public class CodeQualityController {
         }
     }
 
-    @GetMapping("/test/prepare")
+    /*@GetMapping("/test/prepare")
     public ResponseEntity<String> getpreparedCode(){
         try {
             return new ResponseEntity<>(this.codeQualityService.prepareCode("def compteur_complet(start, stop, step):\n" +
@@ -68,5 +68,5 @@ public class CodeQualityController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 }
