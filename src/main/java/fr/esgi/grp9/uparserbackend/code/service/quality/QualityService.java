@@ -1,5 +1,6 @@
 package fr.esgi.grp9.uparserbackend.code.service.quality;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
@@ -105,16 +106,15 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public String parseFile(KafkaTransaction kafkaTransaction) {
+    public String parseFile(KafkaTransaction kafkaTransaction) throws JsonProcessingException {
         String result = "";
-        String[] _artifact = decodeString(kafkaTransaction.getInputfile()).split("\n");
-        List<String> list = new ArrayList<>();
-        for(String i: _artifact) {
-            list.add(i);
-        }
+        String _artifact = decodeString(kafkaTransaction.getInputfile());
+
         if(kafkaTransaction.getLanguage().equals("python")) {
-            //ajouter le switch
-            result = this.pythonParser.csv_to_json(list);
+
+            if(kafkaTransaction.getFrom().equals("json") &&
+                    kafkaTransaction.getTo().equals("csv"))
+            result = this.pythonParser.json_to_csv(_artifact);
         }
         return result;
     }

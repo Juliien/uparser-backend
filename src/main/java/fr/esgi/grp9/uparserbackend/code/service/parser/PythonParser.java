@@ -18,42 +18,42 @@ import java.util.List;
 
 public class PythonParser {
 
-    public String csv_to_json(List<String> csv) {
-        //csv is empty or have declared only columns
-        if (csv.size() <= 1) {
-            return "[]";
-        }
-        //get first line
-        String[] columns = csv.get(0).split(";");
-        //get all rows
-        StringBuilder json = new StringBuilder("[\n");
-        csv.subList(1, csv.size()) //substring without first row(columns)
-                .stream()
-                .map(e -> e.split(";"))
-                .filter(e -> e.length == columns.length) //values size should match with columns size
-                .forEach(row -> {
-
-                    json.append("\t{\n");
-
-                    for (int i = 0; i < columns.length; i++) {
-                        json.append("\t\t\"")
-                                .append(columns[i])
-                                .append("\" : \"")
-                                .append(row[i])
-                                .append("\",\n"); //comma-1
-                    }
-
-                    //replace comma-1 with \n
-                    json.replace(json.lastIndexOf(";"), json.length(), "\n");
-
-                    json.append("\t},"); //comma-2
-
-                });
-        //remove comma-2
-        json.replace(json.lastIndexOf(";"), json.length(), "");
-        json.append("\n]");
-        return json.toString();
-    }
+//    public String csv_to_json(List<String> csv) {
+//        //csv is empty or have declared only columns
+//        if (csv.size() <= 1) {
+//            return "[]";
+//        }
+//        //get first line
+//        String[] columns = csv.get(0).split(";");
+//        //get all rows
+//        StringBuilder json = new StringBuilder("[\n");
+//        csv.subList(1, csv.size()) //substring without first row(columns)
+//                .stream()
+//                .map(e -> e.split(";"))
+//                .filter(e -> e.length == columns.length) //values size should match with columns size
+//                .forEach(row -> {
+//
+//                    json.append("\t{\n");
+//
+//                    for (int i = 0; i < columns.length; i++) {
+//                        json.append("\t\t\"")
+//                                .append(columns[i])
+//                                .append("\" : \"")
+//                                .append(row[i])
+//                                .append("\",\n"); //comma-1
+//                    }
+//
+//                    //replace comma-1 with \n
+//                    json.replace(json.lastIndexOf(";"), json.length(), "\n");
+//
+//                    json.append("\t},"); //comma-2
+//
+//                });
+//        //remove comma-2
+//        json.replace(json.lastIndexOf(";"), json.length(), "");
+//        json.append("\n]");
+//        return json.toString();
+//    }
 
    /* public String csv_to_xml(List<String> csv) {
         //csv is empty or have declared only columns
@@ -99,8 +99,7 @@ public class PythonParser {
     }
 
 
-    public String xml_to_json(String xml){
-
+    public String xml_to_json(String xml) {
         JSONObject json = null;
         try {
             json = XML.toJSONObject(xml);
@@ -113,12 +112,19 @@ public class PythonParser {
     }
 
     public String json_to_csv(String json) throws JsonProcessingException {
+        if(json.charAt(0) != '[') {
+            StringBuilder sb = new StringBuilder(json);
+            sb.insert(0, '[');
+            sb.insert(json.length() + 1, ']');
+            json = sb.toString();
+        }
         JsonNode jsonTree = new ObjectMapper().readTree(json);
         StringWriter w = new StringWriter();
         //ReadCsv
         Builder csvSchemaBuilder = CsvSchema.builder();
         JsonNode firstObject = jsonTree.elements().next();
-        firstObject.fieldNames().forEachRemaining(fieldName -> {csvSchemaBuilder.addColumn(fieldName);} );
+        firstObject.fieldNames().forEachRemaining(fieldName -> {
+            csvSchemaBuilder.addColumn(fieldName);} );
         CsvSchema csvSchema = csvSchemaBuilder.build().withHeader();
         //WriteCSV
         CsvMapper csvMapper = new CsvMapper();
@@ -129,7 +135,6 @@ public class PythonParser {
             e.printStackTrace();
         }
 
-        return w.toString();
-
+        return w.toString().replace(",",";");
     }
 }
