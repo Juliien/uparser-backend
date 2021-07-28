@@ -2,6 +2,7 @@ package fr.esgi.grp9.uparserbackend.code.service.quality;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.Grade;
 import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
@@ -134,7 +135,8 @@ public class QualityService implements IQualityService {
             return code;
         }
 
-//        keyFinderService.ge
+        Grade grade = new Grade(keyFinderService);
+
 
         code.setCodeMark(10);
         return code;
