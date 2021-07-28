@@ -2,33 +2,61 @@ package fr.esgi.grp9.uparserbackend.code.domain.quality;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.*;
 
+@Data
+@Document(collection = "grades")
 public class Grade {
+
     private final KeyFinderService keyFinderService;
 
+    @Id
     private String id;
+    @Field(value = "code_id")
     private String codeId;
+    @Field(value = "run_id")
     private String runId;
 
+    @Field(value = "indentation_grade")
     private Float indentationGrade;
+    @Field(value = "indentation_err_messages")
     private List<String> indentationErrMessages;
 
+    @Field(value = "function_length_grade")
     private Float functionLengthGrade;
+    @Field(value = "function_length_err_messages")
     private List<String> functionLengthErrMessages;
 
+    @Field(value = "line_length_grade")
     private Float lineLengthGrade;
+    @Field(value = "line_length_err_messages")
     private List<String> lineLengthErrMessages;
 
+    @Field(value = "naming_var_grade")
     private Float namingVarGrade;
+    @Field(value = "naming_var_err_messages")
     private List<String> namingVarErrMessages;
 
+    @Field(value = "naming_class_grade")
     private Float namingClassGrade;
+    @Field(value = "naming_class_err_messages")
     private List<String> namingClassErrMessages;
 
+    @Field(value = "import_grade")
     private Float importGrade;
+    @Field(value = "import_err_messages")
     private List<String> importErrMessages;
+
+    @Field(value = "function_depth_grade")
+    private Float functionDepthGrade;
+    @Field(value = "function_depth_err_messages")
+    private List<String> functionDepthMessages;
 
     public Grade(KeyFinderService keyFinderService) {
         this.keyFinderService = keyFinderService;
@@ -41,6 +69,8 @@ public class Grade {
         initNamingVarGradePlusErrMessages();
         initNamingClassGradePlusErrMessages();
         initImportGradePlusErrMessages();
+        initFunctionDepthGradePlusErrMessages();
+
     }
 
     public void setId(String id) {
@@ -93,6 +123,30 @@ public class Grade {
 
     public Float getNamingClassGrade() {
         return namingClassGrade;
+    }
+
+    public void setCodeId(String codeId) {
+        this.codeId = codeId;
+    }
+
+    public String getCodeId() {
+        return codeId;
+    }
+
+    public String getRunId() {
+        return runId;
+    }
+
+    public void setRunId(String runId) {
+        this.runId = runId;
+    }
+
+    public Float getFunctionDepthGrade() {
+        return functionDepthGrade;
+    }
+
+    public List<String> getFunctionDepthMessages() {
+        return functionDepthMessages;
     }
 
     public List<String> getNamingClassErrMessages() {
@@ -208,6 +262,24 @@ public class Grade {
         this.importGrade = ((float)arrayOfImport.size()-(float)cptWrong)/(float)arrayOfImport.size()*10;
     }
 
+    private void initFunctionDepthGradePlusErrMessages(){
+        Hashtable<String, Integer> arrayOfMaxDepthByFunctionName = this.keyFinderService.getArrayOfMaxDepthByFunctionName();
+        int cptWrong = 0;
+        List<String> errMessages = new ArrayList<>();
+
+
+        for (Map.Entry<String, Integer> set:
+                arrayOfMaxDepthByFunctionName.entrySet()) {
+            if (set.getValue() > 4) {
+                cptWrong++;
+                errMessages.add(errMsgCreator("function depth", set.getValue().toString(), set.getKey()));
+            }
+        }
+
+        this.functionDepthMessages = errMessages;
+        this.functionDepthGrade = ((float)arrayOfMaxDepthByFunctionName.size()-(float)cptWrong)/(float)arrayOfMaxDepthByFunctionName.size()*10;
+    }
+
     public static void main(String[] args) {
         Code code = Code.builder()
                 .language("python")
@@ -233,6 +305,8 @@ public class Grade {
         System.out.println(grade.getNamingVarGrade());
         System.out.println(grade.getNamingClassErrMessages());
         System.out.println(grade.getNamingClassGrade());
+        System.out.println(grade.getFunctionDepthMessages());
+        System.out.println(grade.getFunctionDepthGrade());
     }
     
 }
