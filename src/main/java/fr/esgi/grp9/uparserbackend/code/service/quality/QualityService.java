@@ -117,7 +117,7 @@ public class QualityService implements IQualityService {
             if(k.getFrom().equals("json") && k.getTo().equals("csv")) {
                 _result = this.pythonParser.json_to_csv(_artifact);
             }
-            if(k.getFrom().equals("json") && k.getTo().equals("xlm")) {
+            if(k.getFrom().equals("json") && k.getTo().equals("xml")) {
                 _result = this.pythonParser.json_to_xml(_artifact);
             }
             if(k.getFrom().equals("xml") && k.getTo().equals("json")) {
