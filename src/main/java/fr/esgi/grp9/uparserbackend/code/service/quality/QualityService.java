@@ -6,14 +6,13 @@ import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import fr.esgi.grp9.uparserbackend.code.domain.parser.ParserResponse;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
 
 @Service
 public class QualityService implements IQualityService {
@@ -109,7 +108,7 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public ParserResponse parseFile(KafkaTransaction k) throws JsonProcessingException, JSONException {
+    public ParserResponse parseFile(KafkaTransaction k) throws JsonProcessingException {
         String _result = "";
         String _artifact = decodeString(k.getInputfile());
 
