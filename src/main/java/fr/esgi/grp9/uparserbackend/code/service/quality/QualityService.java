@@ -1,7 +1,12 @@
 package fr.esgi.grp9.uparserbackend.code.service.quality;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.Grade;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.GradeRepository;
+import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
+import fr.esgi.grp9.uparserbackend.code.domain.parser.ParserResponse;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import org.springframework.stereotype.Service;
@@ -9,15 +14,19 @@ import org.springframework.stereotype.Service;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 @Service
 public class QualityService implements IQualityService {
     private final CodeRepository codeQualityRepository;
+    private final GradeRepository gradeRepository;
     private final PythonParser pythonParser = new PythonParser();
 
-    public QualityService(CodeRepository codeQualityRepository) {
+    public QualityService(CodeRepository codeQualityRepository, GradeRepository gradeRepository) {
         this.codeQualityRepository = codeQualityRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     @Override
@@ -37,62 +46,6 @@ public class QualityService implements IQualityService {
         code.setHash(hash);
         return code;
     }
-
-    private String decodeString(String s) {
-        byte[] decodedBytes = Base64.getDecoder().decode(s);
-        return new String(decodedBytes);
-    }
-
-    public String prepareCode(String code) {
-        //modify variable and function and argument
-        String str = code.replace("(", " ( ");
-        String str2 = str.replace(")"," ) ");
-        String str3 = str2.replace("="," = ");
-        String str4 = str3.replace(","," ,");
-        String str5 = str4.replace("\""," \" ");
-        String[] tab = str5.split(" ");
-        List<String> abcd  = Arrays.asList(tab);
-        int index1 = abcd.indexOf("(");
-        int index2 = abcd.indexOf(")");
-        System.out.println(index1);
-        for (int i=0; i< tab.length; i++)
-        {
-            if (i > index1 && i < index2 && !tab[i].equals(",") && tab[index1-2].equals("def"))
-                //System.out.println(tab[i]);
-                tab[i] = "parameter";
-            System.out.println(tab[i]);
-            //if(tab[i].equals("if") || tab[i].equals("while") )
-             //   tab[i+1] = "variable";
-            if (tab[i].equals("def") ){
-                tab[i + 1] = "function";
-
-            }
-
-            if (tab[i].equals("=") || tab[i].equals("!=") && !tab[i-2].equals(">") && !tab[i+2].equals(">") )
-               // tab[i-2] = "variable";
-            for (int j=0; j< tab.length; j++) {
-                if (tab[j].equals(tab[i-2]))
-                    tab[j] = "variable";
-            }
-
-
-        }
-
-        StringJoiner preparedcode = new StringJoiner("");
-        for (String c:tab)
-
-            preparedcode.add(c);
-
-        return String.valueOf(preparedcode);
-    }
-
-    private String createMD5Hash(String s) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(s.getBytes());
-        byte[] digest = md.digest();
-        return DatatypeConverter.printHexBinary(digest).toUpperCase();
-    }
-
     private List<Code> checkIfCodeExist(String hash) {
         return this.codeQualityRepository.findAllByHash(hash);
     }
@@ -104,25 +57,52 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public String parseFile(KafkaTransaction kafkaTransaction) {
-        String result = "";
-        String[] _artifact = decodeString(kafkaTransaction.getInputfile()).split("\n");
-        List<String> list = new ArrayList<>();
-        for(String i: _artifact) {
-            list.add(i);
+    public ParserResponse parseFile(KafkaTransaction k) throws JsonProcessingException {
+        String _result = "";
+        String _artifact = decodeString(k.getInputfile());
+
+        if(k.getLanguage().equals("python")) {
+            if(k.getFrom().equals("json") && k.getTo().equals("csv")) {
+                _result = this.pythonParser.json_to_csv(_artifact);
+            }
+            if(k.getFrom().equals("json") && k.getTo().equals("xml")) {
+                _result = this.pythonParser.json_to_xml(_artifact);
+            }
+            if(k.getFrom().equals("xml") && k.getTo().equals("json")) {
+                _result = this.pythonParser.xml_to_json(_artifact);
+            }
         }
-        if(kafkaTransaction.getLanguage().equals("python")) {
-            //ajouter le switch
-            result = this.pythonParser.csv_to_json(list);
-        }
-        return result;
+        return ParserResponse.builder().result(_result).build();
+    }
+
+
+    ////////////////////////////////////////////////////////////////
+
+    private String decodeString(String s) {
+        byte[] decodedBytes = Base64.getDecoder().decode(s);
+        return new String(decodedBytes);
+    }
+
+    private String createMD5Hash(String s) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(s.getBytes());
+        byte[] digest = md.digest();
+        return DatatypeConverter.printHexBinary(digest).toUpperCase();
     }
 
     @Override
     public Code testCodeQuality(Code code) {
-        String decode = decodeString(code.getCodeEncoded());
+        //TODO faire les traitements pour le grade
+        //change le type de retour par un object grade avec 10 boolean
+        //zero si le code ne compile
+        //if isValid == false renvoie grade 0
 
-        code.setCodeMark(10);
+        Grade grade = new Grade(new KeyFinderService(code));
+
+        String gradeId = this.gradeRepository.save(grade).getId();
+
+        code.setGradeId(gradeId);
+
         return code;
     }
 }

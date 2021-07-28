@@ -1,6 +1,5 @@
 package fr.esgi.grp9.uparserbackend.code.domain;
 
-import com.mongodb.lang.NonNull;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -17,6 +16,8 @@ public class Code {
     private String id;
     @Field(value = "user_id")
     private String userId;
+    @Field(value = "grade_id")
+    private String gradeId;
     @Field(value = "code_encoded")
     private String codeEncoded;
     private String hash;
@@ -28,7 +29,6 @@ public class Code {
     @Field(value = "code_mark")
     private int codeMark;
     private boolean isPlagiarism;
-    @NonNull
     private boolean isEnable;
     private Date date;
 }
