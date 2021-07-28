@@ -3,6 +3,9 @@ package fr.esgi.grp9.uparserbackend.code.service.quality;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.Grade;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.GradeRepository;
+import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
 import fr.esgi.grp9.uparserbackend.code.domain.parser.ParserResponse;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
@@ -17,10 +20,12 @@ import java.util.List;
 @Service
 public class QualityService implements IQualityService {
     private final CodeRepository codeQualityRepository;
+    private final GradeRepository gradeRepository;
     private final PythonParser pythonParser = new PythonParser();
 
-    public QualityService(CodeRepository codeQualityRepository) {
+    public QualityService(CodeRepository codeQualityRepository, GradeRepository gradeRepository) {
         this.codeQualityRepository = codeQualityRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     @Override
@@ -128,9 +133,17 @@ public class QualityService implements IQualityService {
 
     @Override
     public Code testCodeQuality(Code code) {
-        String decode = decodeString(code.getCodeEncoded());
+        //TODO faire les traitements pour le grade
+        //change le type de retour par un object grade avec 10 boolean
+        //zero si le code ne compile
+        //if isValid == false renvoie grade 0
 
-        code.setCodeMark(10);
+        Grade grade = new Grade(new KeyFinderService(code));
+
+        String gradeId = this.gradeRepository.save(grade).getId();
+
+        code.setGradeId(gradeId);
+
         return code;
     }
 }

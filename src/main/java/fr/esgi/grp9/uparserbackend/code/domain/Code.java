@@ -16,6 +16,8 @@ public class Code {
     private String id;
     @Field(value = "user_id")
     private String userId;
+    @Field(value = "grade_id")
+    private String gradeId;
     @Field(value = "code_encoded")
     private String codeEncoded;
     private String hash;
