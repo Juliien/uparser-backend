@@ -109,15 +109,20 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public ParserResponse parseFile(KafkaTransaction kafkaTransaction) throws JsonProcessingException, JSONException {
+    public ParserResponse parseFile(KafkaTransaction k) throws JsonProcessingException, JSONException {
         String _result = "";
-        String _artifact = decodeString(kafkaTransaction.getInputfile());
+        String _artifact = decodeString(k.getInputfile());
 
-        if(kafkaTransaction.getLanguage().equals("python")) {
-
-            if(kafkaTransaction.getFrom().equals("json") &&
-                    kafkaTransaction.getTo().equals("csv"))
-            _result = this.pythonParser.json_to_csv(_artifact);
+        if(k.getLanguage().equals("python")) {
+            if(k.getFrom().equals("json") && k.getTo().equals("csv")) {
+                _result = this.pythonParser.json_to_csv(_artifact);
+            }
+            if(k.getFrom().equals("json") && k.getTo().equals("xlm")) {
+                _result = this.pythonParser.json_to_xml(_artifact);
+            }
+            if(k.getFrom().equals("xml") && k.getTo().equals("json")) {
+                _result = this.pythonParser.xml_to_json(_artifact);
+            }
         }
         return ParserResponse.builder().result(_result).build();
     }
