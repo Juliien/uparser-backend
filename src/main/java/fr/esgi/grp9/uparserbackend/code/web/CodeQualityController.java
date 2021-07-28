@@ -1,14 +1,16 @@
 package fr.esgi.grp9.uparserbackend.code.web;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
+import fr.esgi.grp9.uparserbackend.code.domain.parser.ParserResponse;
 import fr.esgi.grp9.uparserbackend.code.service.quality.QualityService;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/quality")
@@ -46,7 +48,7 @@ public class CodeQualityController {
     }
 
     @PostMapping("/parse")
-    public ResponseEntity<String> getCodeParsed(@RequestBody KafkaTransaction kafkaTransaction) {
+    public ResponseEntity<ParserResponse> getCodeParsed(@RequestBody KafkaTransaction kafkaTransaction) {
         try {
             return new ResponseEntity<>(this.codeQualityService.parseFile(kafkaTransaction), HttpStatus.OK);
         } catch (Exception e) {
@@ -55,7 +57,7 @@ public class CodeQualityController {
         }
     }
 
-    @GetMapping("/test/prepare")
+    /*@GetMapping("/test/prepare")
     public ResponseEntity<String> getpreparedCode(){
         try {
             return new ResponseEntity<>(this.codeQualityService.prepareCode("def compteur_complet(start, stop, step):\n" +
@@ -68,5 +70,5 @@ public class CodeQualityController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 }

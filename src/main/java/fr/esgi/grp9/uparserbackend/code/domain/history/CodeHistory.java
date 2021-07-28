@@ -1,6 +1,5 @@
 package fr.esgi.grp9.uparserbackend.code.domain.history;
 
-import com.mongodb.lang.NonNull;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

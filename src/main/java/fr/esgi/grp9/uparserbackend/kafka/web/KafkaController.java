@@ -43,10 +43,9 @@ public class KafkaController {
             uParserProducerService.sendProducerRecord(kafkaTransaction);
             runnerOutput = uParserProducerService.seekForRunnerResults(kafkaTransaction.getId());
         } catch (ExecutionException | InterruptedException | TimeoutException | JsonProcessingException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
         Run runResult = Run.builder()
                 .id(runnerOutput.getRun_id())
                 .userId(id)
@@ -54,26 +53,10 @@ public class KafkaController {
                 .stdout(runnerOutput.getStdout())
                 .stderr(runnerOutput.getStderr())
                 .artifact(runnerOutput.getArtifact())
-                .stats(null)
+                .stats(runnerOutput.getStats())
                 .creationDate(LocalDateTime.now())
                 .build();
 
-        if(!id.equals("1") && runnerOutput.getStderr().isEmpty()) {
-            Code code = Code.builder()
-                    .codeEncoded(kafkaTransaction.getAlgorithm())
-                    .extensionStart(kafkaTransaction.getFrom())
-                    .extensionEnd(kafkaTransaction.getTo())
-                    .language(kafkaTransaction.getLanguage())
-                    .date(new Date())
-                    .build();
-            try {
-                runResult.setCodeId(this.codeService.addCode(code).getId());
-                this.runService.createRun(runResult);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-            }
-        }
         return new ResponseEntity<>(runResult, HttpStatus.OK);
     }
 }

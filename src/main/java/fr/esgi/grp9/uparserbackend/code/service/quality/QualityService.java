@@ -1,10 +1,12 @@
 package fr.esgi.grp9.uparserbackend.code.service.quality;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import fr.esgi.grp9.uparserbackend.code.domain.quality.Grade;
 import fr.esgi.grp9.uparserbackend.code.domain.quality.GradeRepository;
 import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
+import fr.esgi.grp9.uparserbackend.code.domain.parser.ParserResponse;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Service;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
 
 @Service
 public class QualityService implements IQualityService {
@@ -48,9 +51,9 @@ public class QualityService implements IQualityService {
         return new String(decodedBytes);
     }
 
-    public String prepareCode(String code) {
+    private String prepareCode(String code) {
         //modify variable and function and argument
-        String str = code.replace("(", " ( ");
+      /*String str = code.replace("(", " ( ");
         String str2 = str.replace(")"," ) ");
         String str3 = str2.replace("="," = ");
         String str4 = str3.replace(","," ,");
@@ -88,7 +91,8 @@ public class QualityService implements IQualityService {
 
             preparedcode.add(c);
 
-        return String.valueOf(preparedcode);
+        return String.valueOf(preparedcode);*/
+        return null;
     }
 
     private String createMD5Hash(String s) throws NoSuchAlgorithmException {
@@ -109,18 +113,22 @@ public class QualityService implements IQualityService {
     }
 
     @Override
-    public String parseFile(KafkaTransaction kafkaTransaction) {
-        String result = "";
-        String[] _artifact = decodeString(kafkaTransaction.getInputfile()).split("\n");
-        List<String> list = new ArrayList<>();
-        for(String i: _artifact) {
-            list.add(i);
+    public ParserResponse parseFile(KafkaTransaction k) throws JsonProcessingException {
+        String _result = "";
+        String _artifact = decodeString(k.getInputfile());
+
+        if(k.getLanguage().equals("python")) {
+            if(k.getFrom().equals("json") && k.getTo().equals("csv")) {
+                _result = this.pythonParser.json_to_csv(_artifact);
+            }
+            if(k.getFrom().equals("json") && k.getTo().equals("xml")) {
+                _result = this.pythonParser.json_to_xml(_artifact);
+            }
+            if(k.getFrom().equals("xml") && k.getTo().equals("json")) {
+                _result = this.pythonParser.xml_to_json(_artifact);
+            }
         }
-        if(kafkaTransaction.getLanguage().equals("python")) {
-            //ajouter le switch
-            result = this.pythonParser.csv_to_json(list);
-        }
-        return result;
+        return ParserResponse.builder().result(_result).build();
     }
 
     @Override
