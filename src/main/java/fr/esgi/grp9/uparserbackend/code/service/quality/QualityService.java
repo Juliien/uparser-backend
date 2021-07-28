@@ -3,6 +3,7 @@ package fr.esgi.grp9.uparserbackend.code.service.quality;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.domain.CodeRepository;
 import fr.esgi.grp9.uparserbackend.code.domain.quality.Grade;
+import fr.esgi.grp9.uparserbackend.code.domain.quality.GradeRepository;
 import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
 import fr.esgi.grp9.uparserbackend.code.service.parser.PythonParser;
 import fr.esgi.grp9.uparserbackend.kafka.domain.KafkaTransaction;
@@ -16,10 +17,12 @@ import java.util.*;
 @Service
 public class QualityService implements IQualityService {
     private final CodeRepository codeQualityRepository;
+    private final GradeRepository gradeRepository;
     private final PythonParser pythonParser = new PythonParser();
 
-    public QualityService(CodeRepository codeQualityRepository) {
+    public QualityService(CodeRepository codeQualityRepository, GradeRepository gradeRepository) {
         this.codeQualityRepository = codeQualityRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     @Override
@@ -126,19 +129,13 @@ public class QualityService implements IQualityService {
         //change le type de retour par un object grade avec 10 boolean
         //zero si le code ne compile
         //if isValid == false renvoie grade 0
-        KeyFinderService keyFinderService;
 
-        try {
-            keyFinderService = new KeyFinderService(code);
-        } catch (Exception exception) {
-            code.setCodeMark(0);
-            return code;
-        }
+        Grade grade = new Grade(new KeyFinderService(code));
 
-        Grade grade = new Grade(keyFinderService);
+        String gradeId = this.gradeRepository.save(grade).getId();
 
+        code.setGradeId(gradeId);
 
-        code.setCodeMark(10);
         return code;
     }
 }
