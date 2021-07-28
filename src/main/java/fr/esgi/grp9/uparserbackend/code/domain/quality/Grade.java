@@ -1,5 +1,6 @@
 package fr.esgi.grp9.uparserbackend.code.domain.quality;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.*;
 @Data
 @Document(collection = "grades")
 public class Grade {
-
+    @JsonIgnore
     private final KeyFinderService keyFinderService;
 
     @Id
