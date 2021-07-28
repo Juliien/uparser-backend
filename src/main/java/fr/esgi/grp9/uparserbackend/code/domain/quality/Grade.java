@@ -2,7 +2,6 @@ package fr.esgi.grp9.uparserbackend.code.domain.quality;
 
 import fr.esgi.grp9.uparserbackend.code.domain.Code;
 import fr.esgi.grp9.uparserbackend.code.service.keyfinder.KeyFinderService;
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -191,21 +190,21 @@ public class Grade {
     }
 
     private void initLineLengthGradePlusErrMessages(){
-        List<List<String>> arrayOfLinesOfSingleWordsForPlagiarism = this.keyFinderService.getArrayOfLinesOfSingleWordsForPlagiarism();
+        List<List<String>> arrayOfLinesOfSingleWordsForQuality = this.keyFinderService.getArrayOfLinesOfSingleWordsForQuality();
         int cptWrong = 0;
         List<String> errMessages = new ArrayList<>();
 
-        for (int i = 0; i < arrayOfLinesOfSingleWordsForPlagiarism.size(); i++) {
-//        for (List<String> line:  arrayOfLinesOfSingleWordsForPlagiarism) {
-            if (arrayOfLinesOfSingleWordsForPlagiarism.get(i).size() > 79){
+        for (int i = 0; i < arrayOfLinesOfSingleWordsForQuality.size(); i++) {
+//        for (List<String> line:  arrayOfLinesOfSingleWordsForQuality) {
+            if (arrayOfLinesOfSingleWordsForQuality.get(i).size() > 79){
                 cptWrong++;
-                Integer size = arrayOfLinesOfSingleWordsForPlagiarism.get(i).size();
+                Integer size = arrayOfLinesOfSingleWordsForQuality.get(i).size();
                 errMessages.add(errMsgCreator("line length", size.toString(), "line " + i));
             }
         }
 
         this.lineLengthErrMessages = errMessages;
-        this.lineLengthGrade = ((float)arrayOfLinesOfSingleWordsForPlagiarism.size()-(float)cptWrong)/(float)arrayOfLinesOfSingleWordsForPlagiarism.size()*10;
+        this.lineLengthGrade = ((float)arrayOfLinesOfSingleWordsForQuality.size()-(float)cptWrong)/(float)arrayOfLinesOfSingleWordsForQuality.size()*10;
     }
 
     private void initNamingVarGradePlusErrMessages(){
