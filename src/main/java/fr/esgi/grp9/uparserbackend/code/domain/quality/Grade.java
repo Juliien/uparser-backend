@@ -133,14 +133,6 @@ public class Grade {
         return codeId;
     }
 
-    public String getRunId() {
-        return runId;
-    }
-
-    public void setRunId(String runId) {
-        this.runId = runId;
-    }
-
     public Float getFunctionDepthGrade() {
         return functionDepthGrade;
     }
@@ -151,6 +143,35 @@ public class Grade {
 
     public List<String> getNamingClassErrMessages() {
         return namingClassErrMessages;
+    }
+
+    public int getAverage() {
+
+        List<Float> average = new ArrayList<>();
+
+        average.add(indentationGrade);
+        average.add(functionLengthGrade);
+        average.add(lineLengthGrade);
+        average.add(importGrade);
+        average.add(namingVarGrade);
+        average.add(namingClassGrade);
+        average.add(functionDepthGrade);
+
+        Float res = (float) 0;
+        int dividedBy = average.size();
+
+        for (Float rate: average){
+            if (!Float.isNaN(rate)){
+                res = res + rate;
+            } else {
+                dividedBy--;
+            }
+        }
+        if (dividedBy == 0){
+            return 0;
+        } else {
+            return Math.round(res/dividedBy);
+        }
     }
 
     private static String errMsgCreator(String typeOfError, String errorValue, String atElement) {
@@ -196,7 +217,6 @@ public class Grade {
         List<String> errMessages = new ArrayList<>();
 
         for (int i = 0; i < arrayOfLinesOfSingleWordsForQuality.size(); i++) {
-//        for (List<String> line:  arrayOfLinesOfSingleWordsForQuality) {
             if (arrayOfLinesOfSingleWordsForQuality.get(i).size() > 79){
                 cptWrong++;
                 Integer size = arrayOfLinesOfSingleWordsForQuality.get(i).size();
@@ -279,45 +299,4 @@ public class Grade {
         this.functionDepthMessages = errMessages;
         this.functionDepthGrade = ((float)arrayOfMaxDepthByFunctionName.size()-(float)cptWrong)/(float)arrayOfMaxDepthByFunctionName.size()*10;
     }
-
-    public static void main(String[] args) {
-        Code code = Code.builder()
-                .language("python")
-                .extensionEnd("csv")
-                .extensionEnd("json")
-//                .codeEncoded("aW1wb3J0IHN5cwoKZGVmIEhlbGxvKCk6CiAgICBwcmludCgiIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIyIikKICAgIHByaW50KCIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIjIiKQogICAgcHJpbnQoIiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCiAgICBwcmludCgiMiIpCgpwcmludCgiaGVsbG8iKQpqZVN1c2kgPSAxCkhlbGxvKCkKIA==")
-
-                .codeEncoded("ZnJvbSBWYWxsZWdhbWVvZmxpZmUuZ2FtZS5DZWxsIGltcG9ydCBDZWxsCmZyb20gVmFsbGVnYW1lb2ZsaWZlLmdhbWUuRm9ybSBpbXBvcnQgRm9ybQppbXBvcnQgcmFuZG9tCgoKY2xhc3MgUnVubmVyOgogICAgJycnQ2xhc3Mgd2ljaCBwcm92aWRlIGEgbWFwIG9mIGNlbGxzIGFuZAogICAgIG1hbmFnZSB0aGVpciBiZWhhdmlvdXIgdGhyb3VnaCBydWxlcycnJwoKICAgIHRvX3Jldml2ZSA9IFtdCiAgICB0b19raWxsID0gW10KICAgIGZvcm1zID0gRm9ybQoKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBmb3Jtc19hbW91bnQ9NTAsIGRlbnNpdHk9MTAwLCBzaXplPTUwLCBpbml0aWFsX3N0YXR1cz0iZGVhZCIsIHJvdW5kcz01MDAwMCk6CiAgICAgICAgc2VsZi5kZW5zaXR5ID0gZGVuc2l0eQogICAgICAgIHNlbGYuc2l6ZSA9IHNpemUKICAgICAgICBzZWxmLm1hcCA9IHNlbGYuZ2VuZXJhdGVfbWFwKGluaXRpYWxfc3RhdHVzLCBzaXplKQogICAgICAgIHNlbGYuc2V0X2FkZHJlc3NlcygpCiAgICAgICAgc2VsZi5nZW5lcmF0ZV9mb3Jtcyhmb3Jtc19hbW91bnQpCiAgICAgICAgc2VsZi5yb3VuZHMgPSByb3VuZHMKCiAgICBkZWYgZ2VuZXJhdGVfbWFwKHNlbGYsIGluaXRpYWxfc3RhdHVzLCBzaXplKToKICAgICAgICByZXR1cm4gW1tDZWxsKChpICsgMSkgKiAoXyArIDEpLCBpbml0aWFsX3N0YXR1cykgZm9yIGkgaW4gcmFuZ2Uoc2l6ZSldIGZvciBfIGluIHJhbmdlKHNpemUpXQoKICAgIGRlZiBnZW5lcmF0ZV9mb3JtcyhzZWxmLCBhbW91bnQpOgogICAgICAgIGZvciBfIGluIHJhbmdlKGFtb3VudCk6CiAgICAgICAgICAgIHRyaWVzID0gMTAKICAgICAgICAgICAgc2hhcGUgPSBGb3JtLmdldF9zaGFwZSgpCiAgICAgICAgICAgIHBsYWNhYmxlID0gRmFsc2UKICAgICAgICAgICAgd2hpbGUgcGxhY2FibGUgaXMgbm90IFRydWUgYW5kIHRyaWVzID4gMDoKICAgICAgICAgICAgICAgIHRyaWVzIC09IDEKICAgICAgICAgICAgICAgIHJhbmRvbV9wb2ludCA9IHNlbGYuZ2V0X3JhbmRvbV9wb2ludCgpCiAgICAgICAgICAgICAgICBwbGFjYWJsZSA9IHNlbGYuY2hlY2tfcGxhY2UocmFuZG9tX3BvaW50LCBzaGFwZSkKICAgICAgICAgICAgICAgIGlmIHBsYWNhYmxlOgogICAgICAgICAgICAgICAgICAgIHNlbGYucGxhY2UocmFuZG9tX3BvaW50LCBzaGFwZSkKCiAgICAgICAgcmV0dXJuCgogICAgZGVmIGNoZWNrX3BsYWNlKHNlbGYsIG9yaWdpbiwgc2hhcGUpOgogICAgICAgIGZvciB4X2luZGV4IGluIHJhbmdlKEZvcm0uZ2V0X3NoYXBlX2Zvcm0oc2hhcGUpWyJ4Il0pOgogICAgICAgICAgICBmb3IgeV9pbmRleCBpbiByYW5nZShGb3JtLmdldF9zaGFwZV9mb3JtKHNoYXBlKVsieSJdKToKICAgICAgICAgICAgICAgIHggPSAob3JpZ2luWyd4J10gKyB4X2luZGV4KSAlIHNlbGYuc2l6ZQogICAgICAgICAgICAgICAgeSA9IChvcmlnaW5bJ3knXSArIHlfaW5kZXgpICUgc2VsZi5zaXplCiAgICAgICAgICAgICAgICBpZiBzZWxmLmlzX2ZyZWUoeCwgeSkgaXMgbm90IFRydWU6CiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIEZhbHNlCiAgICAgICAgcmV0dXJuIFRydWUKCiAgICBkZWYgcGxhY2Uoc2VsZiwgb3JpZ2luLCBzaGFwZSk6CiAgICAgICAgZm9yIHhfaW5kZXggaW4gcmFuZ2UoRm9ybS5nZXRfc2hhcGVfZm9ybShzaGFwZSlbIngiXSk6CiAgICAgICAgICAgIGZvciB5X2luZGV4IGluIHJhbmdlKEZvcm0uZ2V0X3NoYXBlX2Zvcm0oc2hhcGUpWyJ5Il0pOgogICAgICAgICAgICAgICAgeCA9IChvcmlnaW5bJ3gnXSArIHhfaW5kZXgpICUgc2VsZi5zaXplCiAgICAgICAgICAgICAgICB5ID0gKG9yaWdpblsneSddICsgeV9pbmRleCkgJSBzZWxmLnNpemUKICAgICAgICAgICAgICAgIHNlbGYubWFwW3ldW3hdLnN0YXR1cyA9ICdhbGl2ZScgaWYgc2hhcGVbeV9pbmRleF1beF9pbmRleF0gPT0gJ2EnIGVsc2UgJ2RlYWQnCgogICAgICAgIHJldHVybgoKICAgIGRlZiBpc19mcmVlKHNlbGYsIHgsIHkpOgogICAgICAgIHggJT0gc2VsZi5zaXplCiAgICAgICAgeSAlPSBzZWxmLnNpemUKICAgICAgICByZXR1cm4gVHJ1ZSBpZiBzZWxmLm1hcFt5XVt4XS5zdGF0dXMgPT0gJ2RlYWQnIGVsc2UgRmFsc2UKCiAgICBkZWYgZ2V0X3JhbmRvbV9wb2ludChzZWxmKToKICAgICAgICByZXR1cm4gewogICAgICAgICAgICAneCc6IHJhbmRvbS5yYW5kaW50KDAsIHNlbGYuc2l6ZSAtIDEpLAogICAgICAgICAgICAneSc6IHJhbmRvbS5yYW5kaW50KDAsIHNlbGYuc2l6ZSAtIDEpCiAgICAgICAgfQoKICAgIGRlZiBzZXRfYWRkcmVzc2VzKHNlbGYpOgogICAgICAgIGZvciBpIGluIHJhbmdlKGxlbihzZWxmLm1hcCkpOgogICAgICAgICAgICB5ID0gaQogICAgICAgICAgICBmb3IgaiBpbiByYW5nZShsZW4oc2VsZi5tYXBbaV0pKToKICAgICAgICAgICAgICAgIGNlbGwgPSBzZWxmLm1hcFtpXVtqXQogICAgICAgICAgICAgICAgeCA9IGoKICAgICAgICAgICAgICAgIGNlbGwuc2V0X2FkZHJlc3MoeCwgeSkKCiAgICBkZWYgcnVuKHNlbGYpOgogICAgICAgIGlmIHNlbGYucm91bmRzIDwgMDoKICAgICAgICAgICAgcmV0dXJuCgogICAgICAgIGZvciBjZWxsX2xpbmUgaW4gc2VsZi5tYXA6CiAgICAgICAgICAgIGZvciBjZWxsIGluIGNlbGxfbGluZToKICAgICAgICAgICAgICAgIHNlbGYudHJ5X2tpbGwoY2VsbCkgaWYgY2VsbC5zdGF0dXMgPT0gJ2FsaXZlJyBlbHNlIHNlbGYudHJ5X3Jldml2ZShjZWxsKQogICAgICAgIHNlbGYudXBkYXRlKCkKICAgICAgICBzZWxmLnJlc2V0KCkKICAgICAgICBzZWxmLnJvdW5kcyAtPSAxCgogICAgZGVmIHRyeV9raWxsKHNlbGYsIGNlbGwpOgogICAgICAgIG5laWdoYm91cmhvb2QgPSBzZWxmLmdldF9uZWlnaGJvcmhvb2QoY2VsbCkKICAgICAgICBpZiBsZW4obmVpZ2hib3VyaG9vZCkgIT0gMiBhbmQgbGVuKG5laWdoYm91cmhvb2QpICE9IDM6CiAgICAgICAgICAgIHNlbGYudG9fa2lsbC5hcHBlbmQoY2VsbCkKCiAgICBkZWYgdHJ5X3Jldml2ZShzZWxmLCBjZWxsKToKICAgICAgICBuZWlnaGJvdXJob29kID0gc2VsZi5nZXRfbmVpZ2hib3Job29kKGNlbGwpCiAgICAgICAgaWYgbGVuKG5laWdoYm91cmhvb2QpID09IDM6CiAgICAgICAgICAgIHNlbGYudG9fcmV2aXZlLmFwcGVuZChjZWxsKQoKICAgIGRlZiBnZXRfbmVpZ2hib3Job29kKHNlbGYsIGNlbGwpOgogICAgICAgIG5laWdiaG9ycyA9IFtdCiAgICAgICAgdG9wX3lfaW5kZXggPSBjZWxsLmFkZHJlc3NbJ3knXSAtIFwKICAgICAgICAgICAgMSBpZiBjZWxsLmFkZHJlc3NbJ3knXSA+IDAgZWxzZSBzZWxmLnNpemUgLSAxCiAgICAgICAgYm90X3lfaW5kZXggPSBjZWxsLmFkZHJlc3NbJ3knXSArIFwKICAgICAgICAgICAgMSBpZiBjZWxsLmFkZHJlc3NbJ3knXSA8IHNlbGYuc2l6ZSAtIDEgZWxzZSAwCgogICAgICAgIGZvciB5IGluIFt0b3BfeV9pbmRleCwgY2VsbC5hZGRyZXNzWyd5J10sIGJvdF95X2luZGV4XToKICAgICAgICAgICAgbGVmdF94X2luZGV4ID0gY2VsbC5hZGRyZXNzWyd4J10gLSBcCiAgICAgICAgICAgICAgICAxIGlmIGNlbGwuYWRkcmVzc1sneCddID4gMCBlbHNlIHNlbGYuc2l6ZSAtIDEKICAgICAgICAgICAgcmlnaHRfeF9pbmRleCA9IGNlbGwuYWRkcmVzc1sneCddICsgXAogICAgICAgICAgICAgICAgMSBpZiBjZWxsLmFkZHJlc3NbJ3gnXSA8IHNlbGYuc2l6ZSAtIDEgZWxzZSAwCiAgICAgICAgICAgIGZvciB4IGluIFtsZWZ0X3hfaW5kZXgsIGNlbGwuYWRkcmVzc1sneCddLCByaWdodF94X2luZGV4XToKICAgICAgICAgICAgICAgIG5laWdiaG9ycy5hcHBlbmQoc2VsZi5tYXBbeV1beF0pCgogICAgICAgIHJldHVybiBbbiBmb3IgbiBpbiBuZWlnYmhvcnMgaWYgbi5zdGF0dXMgPT0gJ2FsaXZlJyBhbmQgbiBpcyBub3QgY2VsbF0KCiAgICBkZWYgdXBkYXRlKHNlbGYpOgogICAgICAgIGZvciBjZWxsIGluIHNlbGYudG9fcmV2aXZlOgogICAgICAgICAgICBjZWxsLnJldml2ZSgpCgogICAgICAgIGZvciBjZWxsIGluIHNlbGYudG9fa2lsbDoKICAgICAgICAgICAgY2VsbC5kaWUoKQoKICAgIGRlZiByZXNldChzZWxmKToKICAgICAgICBzZWxmLnRvX2tpbGwgPSBbXQogICAgICAgIHNlbGYudG9fcmV2aXZlID0gW10KCiAgICBkZWYgX19zdHJfXyhzZWxmKToKICAgICAgICByZXR1cm4gKCdcbmRlbnNpdHkgPSAnICsgc3RyKHNlbGYuZGVuc2l0eSkgKyAnXG5zaXplID0gJyArIHN0cihzZWxmLnNpemUpICsgJ1xucG9wdWxhdGlvbiA9IFxuJyArIHNlbGYuc3RyaW5naWZ5X21hcCgpKQoKICAgIGRlZiBzdHJpbmdpZnlfbWFwKHNlbGYpOgogICAgICAgIGZ1bGxfY2VsbHMgPSBbW3N0cihjZWxsKSBmb3IgY2VsbCBpbiBjZWxsX2FycmF5XQogICAgICAgICAgICAgICAgICAgICAgZm9yIGNlbGxfYXJyYXkgaW4gc2VsZi5tYXBdCiAgICAgICAgZm9yIGkgaW4gcmFuZ2UobGVuKGZ1bGxfY2VsbHMpKToKICAgICAgICAgICAgcHJpbnQoZnVsbF9jZWxsc1tpXSkKCiAgICAgICAgcmV0dXJuIHN0cihmdWxsX2NlbGxzKQ==")
-
-//                .codeEncoded("IyBQeXRob24gcHJvZ3JhbSB0byBkaXNwbGF5IHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UKCmRlZiByZWN1cl9maWJvICggbiApIDoKICAgaWYgbiA8PSAxOgogICAgICAgcmV0dXJuIG4KICAgZWxzZToKICAgICAgIHJldHVybihyZWN1cl9maWJvKG4tMSkgKyByZWN1cl9maWJvKG4tMikpCgpudGVybXMgPSAxMAoKIyBjaGVjayBpZiB0aGUgbnVtYmVyIG9mIHRlcm1zIGlzIHZhbGlkCmlmIG50ZXJtcyA8PSAwOgogICBwcmludCgiUGxlc2UgZW50ZXIgYSBwb3NpdGl2ZSBpbnRlZ2VyIikKZWxzZToKICAgcHJpbnQoIkZpYm9uYWNjaSBzZXF1ZW5jZToiKQogICBmb3IgaSBpbiByYW5nZShudGVybXMpOgogICAgICAgcHJpbnQocmVjdXJfZmlibyhpKSkK")
-                .build();
-
-        KeyFinderService keyFinderService = new KeyFinderService(code);
-        System.out.println(keyFinderService.getArrayOfVariables());
-
-
-        Grade grade = new Grade(keyFinderService);
-        System.out.println("grade.getIndentationErrMessages()");
-        System.out.println(grade.getIndentationErrMessages());
-        System.out.println(grade.getIndentationGrade());
-        System.out.println("grade.getFunctionLengthErrMessages()");
-        System.out.println(grade.getFunctionLengthErrMessages());
-        System.out.println(grade.getFunctionLengthGrade());
-        System.out.println("grade.getLineLengthErrMessages()");
-        System.out.println(grade.getLineLengthErrMessages());
-        System.out.println(grade.getLineLengthGrade());
-        System.out.println("grade.getImportErrMessages()");
-        System.out.println(grade.getImportErrMessages());
-        System.out.println(grade.getImportGrade());
-        System.out.println("grade.getNamingVarErrMessages()");
-        System.out.println(grade.getNamingVarErrMessages());
-        System.out.println(grade.getNamingVarGrade());
-        System.out.println("grade.getNamingClassErrMessages()");
-        System.out.println(grade.getNamingClassErrMessages());
-        System.out.println(grade.getNamingClassGrade());
-        System.out.println("grade.getFunctionDepthMessages()");
-        System.out.println(grade.getFunctionDepthMessages());
-        System.out.println(grade.getFunctionDepthGrade());
-    }
-
 }
